@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS= -fopenmp -g  
+CFLAGS= -fopenmp -g -Wall
 LDLIBS = -lm
 
 SRCS = scan.c scan_omp.c
