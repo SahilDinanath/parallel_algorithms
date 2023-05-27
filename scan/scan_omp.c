@@ -28,7 +28,8 @@ void upSweep(long input[], long size) {
   for (long i = 0; i < treeDepth; i++) {
     previousIncrement = pow(2, i);
     increment = pow(2, i + 1);
-#pragma omp parallel shared(increment, previousIncrement) private(previous,next)
+#pragma omp parallel shared(increment, previousIncrement) private(previous,    \
+                                                                      next)
     {
 #pragma omp for
       for (long j = 0; j < size; j += increment) {
@@ -49,7 +50,8 @@ void downSweep(long input[], long size) {
   for (long i = treeDepth - 1; i >= 0; i--) {
     previousIncrement = pow(2, i);
     increment = pow(2, i + 1);
-#pragma omp parallel shared(increment, previousIncrement) private(previous, next, temp)
+#pragma omp parallel shared(increment, previousIncrement) private(             \
+        previous, next, temp)
     {
 #pragma omp for
       for (long j = 0; j < size; j += increment) {
@@ -94,7 +96,7 @@ int main(int argc, char *argv[]) {
   double timeTaken = timeStop - timeStart;
 
   // print out time taken
-   printf("%f", timeTaken);
+  printf("%f", timeTaken);
   // printArray(input, 0, inputSize);
 
   printf("\n");
