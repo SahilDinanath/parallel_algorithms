@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --job-name=bitonic_mpi
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=4
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:10:00
+#SBATCH --output=bitonic_mpi.out
+#SBATCH --error=bitonic_mpi.err
+
+# Load the required module (adjust based on your system)
+module load mpi
+
+# Run the MPI program
+srun ./bitonic_mpi
