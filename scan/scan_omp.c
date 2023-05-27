@@ -23,11 +23,19 @@ void convertCharToIntArray(char *fileCharacters, long *input, long size) {
 void upSweep(long input[], long size) {
   long previous, next;
   long treeDepth = ceil(log2(size));
+  int increment = 0;
+  int previousIncrement = 0;
   for (long i = 0; i < treeDepth; i++) {
-    for (long j = 0; j < size; j += pow(2, i + 1)) {
-      previous = j + pow(2, i) - 1;
-      next = j + pow(2, i + 1) - 1;
-      input[next] = input[previous] + input[next];
+    previousIncrement = pow(2, i);
+    increment = pow(2, i + 1);
+#pragma omp parallel shared(increment, previousIncrement) private(previous,next)
+    {
+#pragma omp for
+      for (long j = 0; j < size; j += increment) {
+        previous = j + previousIncrement - 1;
+        next = j + increment - 1;
+        input[next] = input[previous] + input[next];
+      }
     }
   }
 }
@@ -36,13 +44,21 @@ void downSweep(long input[], long size) {
   long previous, next, temp;
   input[size - 1] = 0;
   long treeDepth = ceil(log2(size));
+  int increment = 0;
+  int previousIncrement = 0;
   for (long i = treeDepth - 1; i >= 0; i--) {
-    for (long j = 0; j < size; j += pow(2, i + 1)) {
-      previous = j + pow(2, i) - 1;
-      next = j + pow(2, i + 1) - 1;
-      temp = input[previous];
-      input[previous] = input[next];
-      input[next] = temp + input[next];
+    previousIncrement = pow(2, i);
+    increment = pow(2, i + 1);
+#pragma omp parallel shared(increment, previousIncrement) private(previous, next, temp)
+    {
+#pragma omp for
+      for (long j = 0; j < size; j += increment) {
+        previous = j + previousIncrement - 1;
+        next = j + increment - 1;
+        temp = input[previous];
+        input[previous] = input[next];
+        input[next] = temp + input[next];
+      }
     }
   }
 }
@@ -60,26 +76,25 @@ int main(int argc, char *argv[]) {
   omp_set_dynamic(0);
   omp_set_num_threads(threads);
 
-  long inputSizeOfTextFile = inputSize+1;
-  char *fileInput = (char*)malloc(inputSize*sizeof(char));
-  long *input = (long*)malloc(inputSize*sizeof(long));
+  long inputSizeOfTextFile = inputSize + 1;
+  char *fileInput = (char *)malloc(inputSize * sizeof(char));
+  long *input = (long *)malloc(inputSize * sizeof(long));
 
   readFile(fileInput, inputSizeOfTextFile, inputFile);
   convertCharToIntArray(fileInput, input, inputSize);
 
-  //start timing code here
+  // start timing code here
   double timeStart = omp_get_wtime();
 
-  //put algorithm here
+  // put algorithm here
   prefixSum(input, inputSize);
 
-  //stop timing code here
+  // stop timing code here
   double timeStop = omp_get_wtime();
   double timeTaken = timeStop - timeStart;
 
-
-  //print out time taken
-  printf("%f",timeTaken);
+  // print out time taken
+   printf("%f", timeTaken);
   // printArray(input, 0, inputSize);
 
   printf("\n");
