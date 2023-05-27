@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <omp.h>
 //power should correspond to the text file
-#define SIZE pow(2, 16)
 
 void printArray(long input[], long startIndex, long endIndex) {
   for (long i = startIndex; i < endIndex; i++) {
@@ -31,11 +30,11 @@ int main(int argc, char *argv[]) {
   //input size of file is one larger then the actual input as the last value in the array of reading in any string is '\0'  
 
   char *inputFile = argv[1];
-  long inputSize = (long)SIZE;
+  long inputSize = atoll(argv[2]);
 
   long inputSizeOfTextFile = inputSize+1;
-  char fileInput[inputSizeOfTextFile];
-  long input[inputSize];
+  char *fileInput = (char*)malloc(inputSize*sizeof(char));
+  long *input = (long*)malloc(inputSize*sizeof(long));
 
   readFile(fileInput, inputSizeOfTextFile, inputFile);
   convertCharToIntArray(fileInput, input, inputSize);
@@ -49,8 +48,11 @@ int main(int argc, char *argv[]) {
   //stop timing code here
   double timeStop = omp_get_wtime();
   double timeTaken = timeStop - timeStart;
-  // printf("%f",timeTaken);
-  printArray(input, 0, inputSize);
+
+
+  //print out time taken
+  printf("%f",timeTaken);
+  // printArray(input, 0, inputSize);
 
   printf("\n");
   return 0;
