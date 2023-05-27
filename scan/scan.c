@@ -43,8 +43,8 @@ void downSweep(long input[], long size) {
   int increment = 0;
   int previousIncrement = 0;
   for (long i = treeDepth - 1; i >= 0; i--) {
-    previousIncrement = pow(2,i);
-    increment = pow(2,i+1);
+    previousIncrement = pow(2, i);
+    increment = pow(2, i + 1);
     for (long j = 0; j < size; j += increment) {
       previous = j + previousIncrement - 1;
       next = j + increment - 1;
