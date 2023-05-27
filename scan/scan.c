@@ -2,13 +2,29 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
-void upSweep(int input[], int size) {
-  int previous, next;
-  int treeDepth = ceil(log2(size));
-  for (int i = 0; i < treeDepth; i++) {
-    for (int j = 0; j < size; j += pow(2, i + 1)) {
+void printArray(long input[], long startIndex, long endIndex) {
+  for (long i = startIndex; i < endIndex; i++) {
+    printf("%ld ", input[i]);
+  }
+}
+void readFile(char *line, long size, char *fileName) {
+  FILE *file = fopen(fileName, "r");
+
+  fgets(line, size, file);
+  fclose(file);
+}
+void convertCharToIntArray(char *fileCharacters, long *input, long size) {
+  for (long i = 0; i < size; i++) {
+    input[i] = fileCharacters[i] - '0';
+  }
+}
+
+void upSweep(long input[], long size) {
+  long previous, next;
+  long treeDepth = ceil(log2(size));
+  for (long i = 0; i < treeDepth; i++) {
+    for (long j = 0; j < size; j += pow(2, i + 1)) {
       previous = j + pow(2, i) - 1;
       next = j + pow(2, i + 1) - 1;
       input[next] = input[previous] + input[next];
@@ -16,12 +32,12 @@ void upSweep(int input[], int size) {
   }
 }
 
-void downSweep(int input[], int size) {
-  int previous, next, temp;
+void downSweep(long input[], long size) {
+  long previous, next, temp;
   input[size - 1] = 0;
-  int treeDepth = ceil(log2(size));
-  for (int i = treeDepth - 1; i >= 0; i--) {
-    for (int j = 0; j < size; j += pow(2, i + 1)) {
+  long treeDepth = ceil(log2(size));
+  for (long i = treeDepth - 1; i >= 0; i--) {
+    for (long j = 0; j < size; j += pow(2, i + 1)) {
       previous = j + pow(2, i) - 1;
       next = j + pow(2, i + 1) - 1;
       temp = input[previous];
@@ -30,47 +46,38 @@ void downSweep(int input[], int size) {
     }
   }
 }
-void printArray(int input[], int startIndex, int endIndex) {
-  for (int i = startIndex; i < endIndex; i++) {
-    printf("%d ", input[i]);
-  }
+
+void prefixSum(long *input, long size) {
+  upSweep(input, size);
+  downSweep(input, size);
 }
-void calculatePrefixSum(int input[])
-double getAverageOfRuns(int input[], int inputSize, int runs) {
-  double average = 0;
-
-  for (int i = 0; i < runs; i++) {
-    double timer = omp_get_wtime();
-
-    upSweep(input, inputSize);
-    downSweep(input, inputSize);
-
-    timer = omp_get_wtime() - timer;
-    average += timer;
-  }
-  return average / runs;
-}
-
 int main(int argc, char *argv[]) {
-  FILE *file = fopen("input_2_16.txt", "r");
-  int *input;
-  size_t n = 0;
-  int c;
+  char *inputFile = argv[1];
+  long inputSize = atoll(argv[2]);
 
-  fseek(file, 0, SEEK_END);
-  long f_size = ftell(file);
-  fseek(file, 0, SEEK_SET);
-  input = (int *)malloc(f_size * sizeof(int));
+  long inputSizeOfTextFile = inputSize+1;
+  char *fileInput = (char*)malloc(inputSize*sizeof(char));
+  long *input = (long*)malloc(inputSize*sizeof(long));
 
-  while ((c = fgetc(file)) != EOF) {
-    input[n++] = (int)c;
-  }
+  readFile(fileInput, inputSizeOfTextFile, inputFile);
+  convertCharToIntArray(fileInput, input, inputSize);
 
-  int inputSize = f_size;
+  //start timing code here
+  double timeStart = omp_get_wtime();
 
-  int lastElementOfInput = input[inputSize - 1];
-  double average = getAverageOfRuns(input, inputSize, 10);
+  //put algorithm here
+  prefixSum(input, inputSize);
 
-  printf("time taken: %f\n", average);
+  //stop timing code here
+  double timeStop = omp_get_wtime();
+  double timeTaken = timeStop - timeStart;
+
+
+  //print out time taken
+  printf("%f",timeTaken);
+  // printArray(input, 0, inputSize);
+
+  printf("\n");
+
   return 0;
 }
