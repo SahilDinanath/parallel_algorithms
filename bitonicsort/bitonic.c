@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_SIZE 1000000
+
 void compAndSwap(int* a, int i, int j, int dir) {
     if ((a[i] > a[j] && dir == 1) || (a[i] < a[j] && dir == 0)) {
         int temp = a[i];
