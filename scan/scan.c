@@ -51,6 +51,7 @@ void prefixSum(long *input, long size) {
   upSweep(input, size);
   downSweep(input, size);
 }
+
 int main(int argc, char *argv[]) {
   char *inputFile = argv[1];
   long inputSize = atoll(argv[2]);
