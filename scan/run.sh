@@ -15,6 +15,6 @@ echo "scan:"
 echo ""
 echo "scan_omp:"
 #the parameters that scan_omp take are ./scan_omp <file_name> <number_of_digits_of_file> <threads>
-./scan_omp input_2_16.txt 65536 8
+./scan_omp input_2_16.txt 65536 4
 echo ""
 echo "========================"
