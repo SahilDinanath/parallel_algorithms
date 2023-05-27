@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
     printf("Process %d received %d elements.\n", world_rank, chunk_size);
 
     // Perform bitonic sort on the local data
-    bitonicSort(local_a, 0, chunk_size, 1);
+    bitonicSort(local_a, 0, chunk_size, 1, MPI_COMM_WORLD);
 
     // Gather the sorted data from all processes
     MPI_Gather(local_a, chunk_size, MPI_INT, a, chunk_size, MPI_INT, 0, MPI_COMM_WORLD);
