@@ -103,8 +103,5 @@ int main(int argc, char *argv[]) {
   // print out time taken
   printf("%f", timeTaken);
   // printArray(input, 0, inputArraySize);
-
-  printf("\n");
-
   return 0;
 }
