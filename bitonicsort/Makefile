@@ -1,5 +1,5 @@
 CC = mpicc
-CFLAGS = -std=c99
+CFLAGS = -std=c11
 
 all: bitonic bitonic_omp bitonic_mpi
 
