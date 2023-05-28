@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
-//power should correspond to the text file
 
 void printArray(long input[], long startIndex, long endIndex) {
   for (long i = startIndex; i < endIndex; i++) {
@@ -57,8 +56,8 @@ int main(int argc, char *argv[]) {
 
 
   //print out time taken
-  // printf("%f",timeTaken);
-  printArray(input, 0, inputArraySize);
+  printf("%f",timeTaken);
+  // printArray(input, 0, inputArraySize);
 
   printf("\n");
   return 0;
