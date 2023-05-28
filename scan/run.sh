@@ -1,6 +1,6 @@
 #!/bin/bash
 #options for running files
-file_name=input_2_28.txt
+file_name=input_2_16.txt
 threads=4
 processes=4
 
@@ -22,4 +22,5 @@ echo "scan_omp:"
 echo ""
 echo "scan_mpi:"
 mpirun -np ${processes} ./scan_mpi ${file_name} 
+echo ""
 echo "========================"
