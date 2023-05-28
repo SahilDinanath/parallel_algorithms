@@ -57,19 +57,42 @@ void downSweep(long input[], long size) {
     }
   }
 }
+void getProcessSum(long input[], long size, long *processSum, long startIndex,
+                   long endIndex) {
+  for (int i = startIndex; i < endIndex; i++) {
+    *processSum += input[i];
+  }
+  printf("%ld", *processSum);
+}
+
+long getStartIndex(int rank, int size, int numOfProcesses) {
+  return floor((rank * size) / (float)numOfProcesses);
+}
+
+long getEndIndex(int rank, int size, int numOfProcesses) {
+  return floor(((rank + 1) * size) / (float)numOfProcesses);
+}
 
 void prefixSum(long *input, long size, int argc, char **argv) {
-  //variables to be initialized 
+  // variables to be initialized
   int rank;
-
-  //setting up mpi
+  int numOfProcesses;
+  long processSum = 0;
+  // setting up mpi
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  
+  MPI_Comm_size(MPI_COMM_WORLD, &numOfProcesses);
   // start timing code here
   double timeStart = MPI_Wtime();
 
+  // get starting and ending indexes of calculations for each process
+  long startIndex = getStartIndex(rank, size, numOfProcesses);
+  long endIndex = getEndIndex(rank, size, numOfProcesses);
+
+  // calculate processSum
+  getProcessSum(input, size, &processSum, startIndex, endIndex);
+
+  // calculate prefix sum
   upSweep(input, size);
   downSweep(input, size);
 
@@ -79,8 +102,8 @@ void prefixSum(long *input, long size, int argc, char **argv) {
 
   // print out time taken
   if (rank == 0) {
-    printf("%f", timeTaken);
-  //  printArray(input, 0, inputArraySize);
+    // printf("%f", timeTaken);
+    //  printArray(input, 0, inputArraySize);
   }
   MPI_Finalize();
 }
@@ -93,7 +116,8 @@ int main(int argc, char *argv[]) {
   long inputArraySize;
   FILE *file = fopen(inputFile, "r");
   getFileSize(&inputFileSize, file);
-  //reason why it's -1 is because reads in terminating character '\0' which is not apart of the sequence
+  // reason why it's -1 is because reads in terminating character '\0' which is
+  // not apart of the sequence
   inputArraySize = inputFileSize - 1;
 
   char *inputFromFile = (char *)malloc(inputArraySize * sizeof(char));
