@@ -1,7 +1,9 @@
 import random
 
-with open('bitonicsort/input.txt', 'r') as input_file, open('arrays.txt', 'w') as output_file:
-    for line in input_file:
-        count = int(line.strip())
-        array = [random.randint(0, 100) for _ in range(count)]
-        output_file.write(' '.join(map(str, array)) + '\n')
+file = open("input_2_28.txt","w")
+
+for i in range(2**28):
+    line = str(random.randint(0,9))
+    file.write(line)
+
+file.close()
