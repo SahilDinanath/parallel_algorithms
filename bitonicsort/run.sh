@@ -1,13 +1,26 @@
 #!/bin/bash
+#options for running files
+file_name=input_2_3.txt
+threads=4
+processes=4
 
-# Serial implementation
-echo "Running serial bitonic sort:"
-./bitonic
+make clean
+make all 
 
-# OpenMP implementation
-echo "Running OpenMP bitonic sort:"
-./bitonic_omp
 
-# MPI implementation
-echo "Running MPI bitonic sort:"
-mpiexec -n 4 ./bitonic_mpi
+
+echo "========================"
+echo "Results of Bitonic Sort Implementations"
+echo "========================"
+echo "bitonic:"
+#the parameters that bitonic take are ./bitonic <file_name> 
+./bitonic ${file_name}
+echo ""
+echo "bitonic_omp:"
+#the parameters that bitonic_omp take are ./bitonic_omp <file_name> <threads>
+./bitonic_omp ${file_name} ${threads}
+echo ""
+echo "bitonic_mpi:"
+mpirun -np ${processes} ./bitonic_mpi ${file_name} 
+echo ""
+echo "========================"
