@@ -77,7 +77,6 @@ int main(int argc, char *argv[]) {
 
   readFile(inputFromFile, inputFileSize, file);
   convertCharToIntArray(inputFromFile, input, inputArraySize);
-
   //start timing code here
   double timeStart = omp_get_wtime();
 
