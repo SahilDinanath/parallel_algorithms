@@ -22,7 +22,11 @@ void convertCharToIntArray(char *fileCharacters, long *input, long size) {
     input[i] = fileCharacters[i] - '0';
   }
 }
-
+void shiftArrayToLeft(long *input, long startIndex,long endIndex){
+  for(long i = startIndex+1; i<endIndex; i++){
+    input[i-1] = input[i];
+  }
+}
 void prefixSum(long *input, long size) {
   for (long i = 1; i < size; i++) {
     input[i] += input[i - 1];
@@ -56,8 +60,8 @@ int main(int argc, char *argv[]) {
 
 
   //print out time taken
-  printf("%f",timeTaken);
-  // printArray(input, 0, inputArraySize);
+  // printf("%f",timeTaken);
+  printArray(input, 0, inputArraySize);
 
   printf("\n");
   return 0;
