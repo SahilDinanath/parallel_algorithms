@@ -29,6 +29,15 @@ void bitonicMerge(long *a, int low, int count, int dir)
   }
 }
 
+void evenOddSwap(long *a, int size)
+{
+  for (int i = 2; i < size; i += 2)
+  {
+    long temp = a[i];
+    a[i] = a[i - 1];
+    a[i -1] = temp;
+  }
+}
 
 void bitonicSort(long *a, int low, int count, int dir)
 {
@@ -114,7 +123,7 @@ int main(int argc, char **argv)
   long* local_a = (long*)malloc(chunk_size * sizeof(long));
   MPI_Scatter(input, chunk_size, MPI_LONG, local_a, chunk_size, MPI_LONG, 0, MPI_COMM_WORLD);
 
-  printf("Process %d received %ld elements.\n", world_rank, chunk_size);
+  // printf("Process %d received %ld elements.\n", world_rank, chunk_size);
 
   // start timing code here
   double timeStart = omp_get_wtime();
@@ -132,7 +141,7 @@ int main(int argc, char **argv)
   {
     // Perform the final bitonic merge on the gathered data
     bitonicMerge(input, 0, inputArraySize, 1);
-
+    evenOddSwap(input, inputArraySize);
     printArray(input, 0, inputArraySize);
     printf("\n");
   }
