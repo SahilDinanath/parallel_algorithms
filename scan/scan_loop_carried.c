@@ -1,54 +1,52 @@
-#include <stdio.h>
-#include <omp.h>
-#include <time.h>
-#include <stdlib.h>
 #include <math.h>
-void generateArrayOfRandomNumbers(int input[],int size){
-  srand(time(NULL));
-  for(int i = 0; i < size; i++){
-    input[i] = rand()%100;
+#include <omp.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+void printArray(long input[], long startIndex, long endIndex) {
+  for (long i = startIndex; i < endIndex; i++) {
+    printf("%ld ", input[i]);
   }
 }
-void printArray(int input[],int startIndex,int endIndex){
-  for(int i = startIndex; i < endIndex;i++){
-    printf("%d ",input[i]);
+void generateRandomNumbers(long *input, long size) {
+  int lower = 0;
+  int upper = 9;
+
+  for (int i = 0; i < size; i++) {
+    input[i] = (rand() % (upper - lower + 1)) + lower;
+  }
+}
+void shiftArrayToLeft(long *input, long startIndex, long endIndex) {
+  for (long i = startIndex + 1; i < endIndex; i++) {
+    input[i - 1] = input[i];
+  }
+}
+void prefixSum(long *input, long size) {
+  for (long i = 1; i < size; i++) {
+    input[i] += input[i - 1];
   }
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
+  // reads in arguments, initializes variables, sets up necessary details for
+  // the rest of the program
+  long inputSize = atol(argv[1]);
+  long *input = (long *)malloc(inputSize * sizeof(long));
+  generateRandomNumbers(input, inputSize);
+  // start timing code here
+  double timeStart = omp_get_wtime();
 
-  while(fgets(line,100,p_file) != NULL)
-{
-    char *p = strtok(line, ":");
-    while(p)
-    {
-        printf("%s\n", p); //Store into array or variables
-        p=strtok(NULL, ":");
-    }
-}
-  int *input = malloc(inputSize*sizeof(int));
+  // put algorithm here
+  prefixSum(input, inputSize);
 
-  for(int i = 1; i < argc; i++){
-    input[i-1] = atoi(argv[i]);
-  }
-  // int input[] = {3,1,7,0,4,1,6,3};
-  // int input[131072*8];
-  // int inputSize = sizeof(input)/sizeof(int);
-  // generateArrayOfRandomNumbers(input, inputSize);
+  // stop timing code here
+  double timeStop = omp_get_wtime();
+  double timeTaken = timeStop - timeStart;
 
-  
-  double timer = omp_get_wtime();
-  
-  for(int i = 1; i < inputSize; i++){
-    input[i] += input[i-1];
-  }
-  
-
-  timer = omp_get_wtime()-timer;
+  // print out time taken
+  //  printf("%f",timeTaken);
   printArray(input, 0, inputSize);
+
   printf("\n");
-  printf("time taken: %f\n",timer);
-  free(input);
   return 0;
 }
