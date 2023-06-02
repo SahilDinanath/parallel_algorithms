@@ -163,7 +163,6 @@ void prefixSum(long *input, long *original, long size, int argc, char **argv) {
   // gathers all the data from each array into one array
   MPI_Gather(&input[startIndex], chunkSize, MPI_LONG, &inputFinal[startIndex],
              chunkSize, MPI_LONG, 0, MPI_COMM_WORLD);
-  MPI_Barrier(MPI_COMM_WORLD);
   // stop timing code here
   double timeStop = MPI_Wtime();
   double timeTaken = timeStop - timeStart;
