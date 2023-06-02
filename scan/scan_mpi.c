@@ -84,7 +84,7 @@ void downSweep(long input[], long chunkSize, long startIndex, long endIndex) {
 void getProcessSum(long input[], long size, long *processSum, long chunkSize,
                    int rank) {
   if (rank == 0) {
-    processSum = 0;
+    *processSum = 0;
     return;
   }
   for (int i = (rank - 1) * chunkSize; i < rank * chunkSize; i++) {
