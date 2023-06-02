@@ -2,75 +2,128 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
-void upSweep(int input[], int size) {
-  int previous, next;
-  int treeDepth = ceil(log2(size));
-  for (int i = 0; i < treeDepth; i++) {
-    for (int j = 0; j < size; j += pow(2, i + 1)) {
-      previous = j + pow(2, i) - 1;
-      next = j + pow(2, i + 1) - 1;
+
+void printArray(long input[], long startIndex, long endIndex) {
+  for (long i = startIndex; i < endIndex; i++) {
+    printf("%ld ", input[i]);
+  }
+}
+void generateRandomNumbers(long *input, long size) {
+  int lower = 0;
+  int upper = 9;
+
+  for (int i = 0; i < size; i++) {
+    input[i] = (rand() % (upper - lower + 1)) + lower;
+  }
+}
+
+void upSweep(long input[], long size) {
+  long previous, next;
+  long treeDepth = ceil(log2(size));
+  long increment = 0;
+  long previousIncrement = 0;
+  for (long i = 0; i < treeDepth; i++) {
+    previousIncrement = pow(2, i);
+    increment = pow(2, i + 1);
+    for (long j = 0; j < size; j += increment) {
+      previous = j + previousIncrement - 1;
+      next = j + increment - 1;
       input[next] = input[previous] + input[next];
     }
   }
 }
 
-void downSweep(int input[], int size) {
-  int previous, next, temp;
+
+void downSweep(long input[], long size) {
+  long previous, next, temp;
   input[size - 1] = 0;
-  int treeDepth = ceil(log2(size));
-  for (int i = treeDepth - 1; i >= 0; i--) {
-    for (int j = 0; j < size; j += pow(2, i + 1)) {
-      previous = j + pow(2, i) - 1;
-      next = j + pow(2, i + 1) - 1;
+  long treeDepth = ceil(log2(size));
+  long increment = 0;
+  long previousIncrement = 0;
+  for (long i = treeDepth - 1; i >= 0; i--) {
+    previousIncrement = pow(2, i);
+    increment = pow(2, i + 1);
+    for (long j = 0; j < size; j += increment) {
+      previous = j + previousIncrement - 1;
+      next = j + increment - 1;
       temp = input[previous];
       input[previous] = input[next];
       input[next] = temp + input[next];
     }
   }
 }
-void printArray(int input[], int startIndex, int endIndex) {
-  for (int i = startIndex; i < endIndex; i++) {
-    printf("%d ", input[i]);
+
+void shiftArrayToLeft(long *input, long size) {
+  for (long i = 1; i < size; i++) {
+    input[i - 1] = input[i];
   }
 }
-void calculatePrefixSum(int input[])
-double getAverageOfRuns(int input[], int inputSize, int runs) {
-  double average = 0;
-
-  for (int i = 0; i < runs; i++) {
-    double timer = omp_get_wtime();
-
-    upSweep(input, inputSize);
-    downSweep(input, inputSize);
-
-    timer = omp_get_wtime() - timer;
-    average += timer;
-  }
-  return average / runs;
+void getLastElementPrefixSum(long *input, long size, long initalLastElement) {
+  input[size - 1] += initalLastElement;
 }
 
+void prefixSum(long *input, long size) {
+  long tempLastElement = input[size - 1];
+  upSweep(input, size);
+  downSweep(input, size);
+  shiftArrayToLeft(input, size);
+  getLastElementPrefixSum(input, size, tempLastElement);
+}
+
+void serialPrefixSum(long *original, long size) {
+  for (long i = 1; i < size; i++) {
+    original[i] += original[i - 1];
+  }
+}
+int compareArrays(long *input, long *original, long size) {
+  for (int i = 0; i < size; i++) {
+    if (input[i] != original[i]) {
+      return 0;
+    }
+  }
+  return 1;
+}
+void correctnessAssertion(long *input, long *original, long size) {
+  serialPrefixSum(original, size);
+  int result = compareArrays(input, original, size);
+  if (result == 1) {
+    printf("Results are correct");
+  } else {
+    printf("Results are incorrect");
+  }
+}
+
+void arrayCopy(long *source, long *destination, long size) {
+  for (long i = 0; i < size; i++) {
+    destination[i] = source[i];
+  }
+}
 int main(int argc, char *argv[]) {
-  FILE *file = fopen("input_2_16.txt", "r");
-  int *input;
-  size_t n = 0;
-  int c;
+  // reads in arguments, initializes variables, sets up necessary details for
+  // the rest of the program
+  long inputSize = pow(2, atol(argv[1]));
 
-  fseek(file, 0, SEEK_END);
-  long f_size = ftell(file);
-  fseek(file, 0, SEEK_SET);
-  input = (int *)malloc(f_size * sizeof(int));
+  long *input = (long *)malloc(inputSize * sizeof(long));
+  long *original = (long *)malloc(inputSize * sizeof(long));
 
-  while ((c = fgetc(file)) != EOF) {
-    input[n++] = (int)c;
-  }
+  generateRandomNumbers(input, inputSize);
+  arrayCopy(input, original, inputSize);
 
-  int inputSize = f_size;
+  // start timing code here
+  double timeStart = omp_get_wtime();
 
-  int lastElementOfInput = input[inputSize - 1];
-  double average = getAverageOfRuns(input, inputSize, 10);
+  // put algorithm here
+  prefixSum(input, inputSize);
 
-  printf("time taken: %f\n", average);
+  // stop timing code here
+  double timeStop = omp_get_wtime();
+  double timeTaken = timeStop - timeStart;
+
+  // print out time taken
+  printf("%f\n", timeTaken);
+  // do correctnessAssertion here
+  correctnessAssertion(input, original, inputSize);
+  // printArray(input, 0, inputSize);
   return 0;
 }

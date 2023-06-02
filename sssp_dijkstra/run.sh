@@ -1,6 +1,8 @@
 #!/bin/bash
 
 file_name="graph_10.txt"
+threads=2
+
 make clean
 make all
 cd input_graphs
