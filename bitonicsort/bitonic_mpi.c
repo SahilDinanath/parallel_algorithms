@@ -99,22 +99,9 @@ int main(int argc, char **argv)
   // Calculate the chunk size for each process
   long chunk_size = inputArraySize / world_size;
 
-  char *inputFromFile;
-  long *input;
+    char *inputFromFile = (char*)malloc(inputArraySize*sizeof(char));
 
-  int align = 64; // Adjust the alignment value as per your system requirements
-
-  // Allocate memory for inputFromFile with proper alignment
-  if (posix_memalign((void**)&inputFromFile, align, inputArraySize * sizeof(char)) != 0) {
-    fprintf(stderr, "Error: Failed to allocate memory with proper alignment.\n");
-    MPI_Abort(MPI_COMM_WORLD, 1);
-  }
-
-  // Allocate memory for input with proper alignment
-  if (posix_memalign((void**)&input, align, inputArraySize * world_size * sizeof(long)) != 0) {
-    fprintf(stderr, "Error: Failed to allocate memory with proper alignment.\n");
-    MPI_Abort(MPI_COMM_WORLD, 1);
-  }
+  long *input = (long*)malloc(inputArraySize*sizeof(long));
 
   readFile(inputFromFile, inputFileSize, file);
   convertCharToIntArray(inputFromFile, input, inputArraySize);
