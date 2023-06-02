@@ -59,3 +59,5 @@ scan/scan
 scan/scan_loop_carried
 scan/scan_mpi
 scan/scan_omp
+sssp_dijkstra/sssp
+sssp_dijkstra/sssp_omp
