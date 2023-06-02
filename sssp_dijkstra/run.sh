@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file_name="graph_10.txt"
+file_name="graph_6.txt"
 threads=2
 
 make clean
@@ -25,6 +25,6 @@ done
 
 # Run Python script to calculate average of execution times
 python3 average.py
-cat times.txt
+# cat times.txt
 > times.txt
 rm "$file_name"

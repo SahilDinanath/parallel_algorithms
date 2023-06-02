@@ -1,4 +1,5 @@
 #!/bin/bash
+./unix.sh
 
 cd scan
 ./run.sh
