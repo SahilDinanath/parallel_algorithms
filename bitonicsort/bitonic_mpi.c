@@ -117,9 +117,6 @@ int main(int argc, char **argv)
 
   // Perform bitonic sort on the local data
   bitonicSort(local_a, 0, chunk_size, 1);
-  // stop timing code here
-  double timeStop = omp_get_wtime();
-  double timeTaken = timeStop - timeStart;
 
   // Gather the sorted data from all processes
   MPI_Gather(local_a, chunk_size, MPI_LONG, input, chunk_size, MPI_LONG, 0, MPI_COMM_WORLD);
@@ -129,12 +126,15 @@ int main(int argc, char **argv)
     // Perform the final bitonic merge on the gathered data
     bitonicMerge(input, 0, inputArraySize, 1);
     evenOddSwap(input, inputArraySize);
+    // stop timing code here
+    double timeStop = omp_get_wtime();
+    double timeTaken = timeStop - timeStart;
     printArray(input, 0, inputArraySize);
     printf("\n");
+    // print out time taken
+    printf("%f",timeTaken);
+    printf("\n");
   }
-  // print out time taken
-  //   printf("%f",timeTaken);
-
   // Free allocated memory
   free(local_a);
   free(inputFromFile);

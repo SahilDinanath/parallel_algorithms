@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 void printArray(long input[], long startIndex, long endIndex) {
   for (long i = startIndex; i < endIndex; i++) {
     printf("%ld ", input[i]);
@@ -33,6 +34,7 @@ void upSweep(long input[], long size) {
   }
 }
 
+
 void downSweep(long input[], long size) {
   long previous, next, temp;
   input[size - 1] = 0;
@@ -51,6 +53,7 @@ void downSweep(long input[], long size) {
     }
   }
 }
+
 void shiftArrayToLeft(long *input, long size) {
   for (long i = 1; i < size; i++) {
     input[i - 1] = input[i];

@@ -84,9 +84,10 @@ int main(int argc, char *argv[]) {
   double timeTaken = timeStop - timeStart;
 
 
-  //print out time taken
-//   printf("%f",timeTaken);
   printArray(input, 0, inputArraySize);
+  printf("\n");
+  // print out time taken
+  printf("%f",timeTaken);
 
   printf("\n");
   return 0;

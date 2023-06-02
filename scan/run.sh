@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #options for running files
 power_of_two=18
 threads=2
@@ -7,12 +8,14 @@ processes=2
 make clean
 make all 
 
+
 echo ${num_of_elements}
 
 echo "========================"
 echo "Results of Scan Implementations"
 echo "========================"
 echo "scan:"
+
 #the parameters that scan take are ./scan <file_name> 
 ./scan ${power_of_two}
 echo ""
