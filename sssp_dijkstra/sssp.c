@@ -134,10 +134,6 @@ int main(int argc, char* argv[]) {
 
     dijkstra(graph, n, source);
 
-    // Free the dynamically allocated memory for the graph
-    for (int i = 0; i < n; i++) {
-        free(graph[i]);
-    }
     free(graph);
 
     return 0;
