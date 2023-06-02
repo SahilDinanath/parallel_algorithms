@@ -8,9 +8,6 @@ processes=2
 make clean
 make all 
 
-
-echo ${num_of_elements}
-
 echo "========================"
 echo "Results of Scan Implementations"
 echo "========================"

@@ -7,5 +7,5 @@ with open("times.txt", "r") as f:
 # Calculate average execution time
 average_time = statistics.mean(execution_times)
 
-# Print the average execution time
-print(f"Average execution time: {average_time}")
+# Print the average execution time with all decimal places
+print(f"Average execution time: {average_time:.10f}")
