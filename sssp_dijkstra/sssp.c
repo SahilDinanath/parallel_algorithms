@@ -128,11 +128,11 @@ int main(int argc, char* argv[]) {
 
     fclose(input_file);
 
-    int source;
-    printf("Enter the source vertex: ");
-    scanf("%d", &source);
+    // int source;
+    // printf("Enter the source vertex: ");
+    // scanf("%d", &source);
 
-    dijkstra(graph, n, source);
+    dijkstra(graph, n, 0);
 
     free(graph);
 
