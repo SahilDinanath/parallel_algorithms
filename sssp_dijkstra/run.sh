@@ -18,10 +18,11 @@ echo "sssp:"
 # Execute SSSP four times and pipe the last line of output to times.txt
 for i in {1..4}
 do
-    ./sssp "${file_name}" | tail -n 1 > times.txt
+    ./sssp "${file_name}" | tail -n 1 >> times.txt
 done
 
 # Run Python script to calculate average of execution times
 python3 average.py
-
+# cat times.txt
+> times.txt
 rm "$file_name"

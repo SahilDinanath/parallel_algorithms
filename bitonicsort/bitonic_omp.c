@@ -106,10 +106,11 @@ int main(int argc, char *argv[])
   double timeStop = omp_get_wtime();
   double timeTaken = timeStop - timeStart;
 
-  // print out time taken
-  //   printf("%f",timeTaken);
+  // correctness assertion
   printArray(input, 0, inputArraySize);
-
+  printf("\n");
+  // print out time taken
+  printf("%f",timeTaken);
   printf("\n");
   return 0;
 }

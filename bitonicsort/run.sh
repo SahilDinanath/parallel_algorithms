@@ -1,26 +1,39 @@
 #!/bin/bash
-#options for running files
-file_name=input_2_3.txt
+
+# Options for running files
+file_name="input_2_3.txt"
 threads=4
 processes=4
 
 make clean
 make all 
 
-
-
 echo "========================"
 echo "Results of Bitonic Sort Implementations"
 echo "========================"
+
 echo "bitonic:"
-#the parameters that bitonic take are ./bitonic <file_name> 
-./bitonic ${file_name}
-echo ""
+for i in {1..4} 
+do
+    ./bitonic "${file_name}" | tail -n 1 >> times.txt
+done 
+# cat times.txt
+python3 average.py
+> times.txt
+
 echo "bitonic_omp:"
-#the parameters that bitonic_omp take are ./bitonic_omp <file_name> <threads>
-./bitonic_omp ${file_name} ${threads}
-echo ""
+for i in {1..4} 
+do
+    ./bitonic_omp "${file_name}" "${threads}" | tail -n 1 >> times.txt
+done  
+# cat times.txt
+python3 average.py
+> times.txt
+
 echo "bitonic_mpi:"
-mpirun -np ${processes} ./bitonic_mpi ${file_name} 
-echo ""
-echo "========================"
+for i in {1..4} 
+do
+    mpirun -np "${processes}" ./bitonic_mpi "${file_name}" | tail -n 1 >> times.txt
+done 
+# cat times.txt
+python3 average.py
