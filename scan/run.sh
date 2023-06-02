@@ -1,26 +1,41 @@
 #!/bin/bash
 
-#options for running files
-power_of_two=28
-threads=8
+# options for running files
+power_of_two=18
+threads=2
 processes=2
 
 make clean
-make all 
+make all
 
 echo "========================"
 echo "Results of Scan Implementations"
 echo "========================"
-echo "scan:"
 
-#the parameters that scan take are ./scan <file_name> 
-./scan ${power_of_two}
-echo ""
+echo "scan:"
+for i in {1..4}
+do
+    ./scan ${power_of_two} | tee -a times.txt
+done
+
+python3 calculate_average_speedup.py
+> times.txt
+
 echo "scan_omp:"
-#the parameters that scan_omp take are ./scan_omp <file_name> <threads>
-./scan_omp ${power_of_two} ${threads}
-echo ""
+for i in {1..4}
+do
+    ./scan_omp ${power_of_two} ${threads} | tee -a times.txt
+done
+
+python3 calculate_average_speedup.py
+> times.txt
+
 echo "scan_mpi:"
-mpirun -np ${processes} ./scan_mpi ${power_of_two} ${processes}
-echo ""
-echo "========================"
+for i in {1..4}
+do
+    mpirun -np ${processes} ./scan_mpi ${power_of_two} ${processes} | tee -a times.txt
+done
+
+python3 calculate_average_speedup.py
+> times.txt
+> speedup.txt
