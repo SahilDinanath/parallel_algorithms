@@ -39,3 +39,5 @@ done
 python3 calculate_average_speedup.py
 > times.txt
 > speedup.txt
+
+
