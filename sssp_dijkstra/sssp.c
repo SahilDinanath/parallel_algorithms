@@ -90,6 +90,7 @@ void dijkstra(int** graph, int n, int source) {
     }
     double timeStop = omp_get_wtime();
     double timeTaken = timeStop - timeStart;
+    // Uncomment to display shortest paths length and path
     // Print the shortest paths
     // printShortestPaths(vertices, n, source);
     printf("Execution time: %lf", timeTaken);
@@ -128,6 +129,7 @@ int main(int argc, char* argv[]) {
 
     fclose(input_file);
 
+    //Uncomment to give user input source vertex
     // int source;
     // printf("Enter the source vertex: ");
     // scanf("%d", &source);
