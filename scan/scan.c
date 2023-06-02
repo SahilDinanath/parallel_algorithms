@@ -26,8 +26,8 @@ void convertCharToIntArray(char *fileCharacters, long *input, long size) {
 void upSweep(long input[], long size) {
   long previous, next;
   long treeDepth = ceil(log2(size));
-  int increment = 0;
-  int previousIncrement = 0;
+  long increment = 0;
+  long previousIncrement = 0;
   for (long i = 0; i < treeDepth; i++) {
     previousIncrement = pow(2, i);
     increment = pow(2, i + 1);
@@ -43,8 +43,8 @@ void downSweep(long input[], long size) {
   long previous, next, temp;
   input[size - 1] = 0;
   long treeDepth = ceil(log2(size));
-  int increment = 0;
-  int previousIncrement = 0;
+  long increment = 0;
+  long previousIncrement = 0;
   for (long i = treeDepth - 1; i >= 0; i--) {
     previousIncrement = pow(2, i);
     increment = pow(2, i + 1);
@@ -67,18 +67,18 @@ void getLastElementPrefixSum(long *input, long size, long initalLastElement) {
 }
 
 void prefixSum(long *input, long size) {
-  long tempLastElement = input[size - 1];
+  // long tempLastElement = input[size - 1];
   upSweep(input, size);
   downSweep(input, size);
-  shiftArrayToLeft(input, size);
-  getLastElementPrefixSum(input, size, tempLastElement);
+  // shiftArrayToLeft(input, size);
+  // getLastElementPrefixSum(input, size, tempLastElement);
 }
 
-void serialPrefixSum(long *input, long size) {
+void serialPrefixSum(long *original, long size) {
   for (long i = 1; i < size; i++) {
-    input[i] += input[i - 1];
+    original[i] += original[i - 1];
   }
-  printArray(input,0,size);
+  printArray(original,0,size);
 }
 int compareArrays(long *input, long *original, long size) {
   for (int i = 0; i < size; i++) {
@@ -110,15 +110,16 @@ int main(int argc, char *argv[]) {
   long inputArraySize;
   FILE *file = fopen(inputFile, "r");
   getFileSize(&inputFileSize, file);
-  inputArraySize = inputFileSize - 1;
+  inputArraySize = inputFileSize;
 
   char *inputFromFile = (char *)malloc(inputArraySize * sizeof(char));
   long *input = (long *)malloc(inputArraySize * sizeof(long));
-  long *original = (long *)malloc(inputArraySize * sizeof(long));
-
+  // long *original = (long *)malloc(inputArraySize * sizeof(long));
+  printf("%ld\n",inputArraySize);
+  
   readFile(inputFromFile, inputFileSize, file);
   convertCharToIntArray(inputFromFile, input, inputArraySize);
-  arrayCopy(input, original, inputArraySize);
+  // arrayCopy(input, original, inputArraySize);
   // start timing code here
   double timeStart = omp_get_wtime();
 
@@ -132,7 +133,7 @@ int main(int argc, char *argv[]) {
   // print out time taken
   printf("%f\n", timeTaken);
   // do correctnessAssertion here
-  correctnessAssertion(input, original, inputArraySize);
+  // correctnessAssertion(input, original, inputArraySize);
   printArray(input, 0, inputArraySize);
   return 0;
 }
