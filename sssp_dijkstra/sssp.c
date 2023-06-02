@@ -92,7 +92,7 @@ void dijkstra(int** graph, int n, int source) {
     double timeTaken = timeStop - timeStart;
     // Uncomment to display shortest paths length and path
     // Print the shortest paths
-    printShortestPaths(vertices, n, source);
+    // printShortestPaths(vertices, n, source);
     printf("%lf", timeTaken);
     printf("\n");
 

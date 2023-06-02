@@ -11,7 +11,7 @@ make all
 echo "========================"
 echo "Results of Bitonic Sort Implementations"
 echo "========================"
-
+python3 randomarrays.py
 echo "bitonic:"
 for i in {1..4} 
 do
