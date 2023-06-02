@@ -1,5 +1,5 @@
 #!/bin/bash
-file_name="graph_0.txt"
+file_name="graph_10.txt"
 make clean
 make all
 cd input_graphs
