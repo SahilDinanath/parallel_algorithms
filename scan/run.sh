@@ -1,6 +1,6 @@
 #!/bin/bash
 #options for running files
-file_name=input_2_24.txt
+file_name=input_2_3.txt
 threads=4
 processes=4
 
