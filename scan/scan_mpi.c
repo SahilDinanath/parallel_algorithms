@@ -2,27 +2,50 @@
 #include <mpi/mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+//utility functions
 void printArray(long input[], long startIndex, long endIndex) {
   for (long i = startIndex; i < endIndex; i++) {
     printf("%ld ", input[i]);
   }
 }
-void readFile(char *line, long size, FILE *fileName) {
-  fgets(line, size, fileName);
-  fclose(fileName);
+void generateRandomNumbers(long *input, long size) {
+  int lower = 0;
+  int upper = 9;
+
+  for (int i = 0; i < size; i++) {
+    input[i] = (rand() % (upper - lower + 1)) + lower;
+  }
 }
-void getFileSize(long *size, FILE *fileName) {
-  fseek(fileName, 0L, SEEK_END);
-  *size = ftell(fileName);
-  fseek(fileName, 0L, SEEK_SET);
+void serialPrefixSum(long *original, long size) {
+  for (long i = 1; i < size; i++) {
+    original[i] += original[i - 1];
+  }
 }
-void convertCharToIntArray(char *fileCharacters, long *input, long size) {
+int compareArrays(long *input, long *original, long size) {
+  for (int i = 0; i < size; i++) {
+    if (input[i] != original[i]) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
+void correctnessAssertion(long *input, long *original, long size) {
+  serialPrefixSum(original, size);
+  int result = compareArrays(input, original, size);
+  if (result == 1) {
+    printf("Results are correct");
+  } else {
+    printf("Results are incorrect");
+  }
+}
+void arrayCopy(long *source, long *destination, long size) {
   for (long i = 0; i < size; i++) {
-    input[i] = fileCharacters[i] - '0';
+    destination[i] = source[i];
   }
 }
 
+//prefix sum code
 void upSweep(long input[], long chunkSize, long startIndex, long endIndex) {
   long previous, next;
   long treeDepth = ceil(log2(chunkSize));
@@ -67,8 +90,8 @@ void getProcessSum(long input[], long size, long *processSum, long chunkSize,
   for (int i = (rank - 1) * chunkSize; i < rank * chunkSize; i++) {
     *processSum += input[i];
   }
-  // printf("%ld",*processSum);
 }
+
 void applyOffset(long input[], long startIndex, long endIndex, long *processSum,
                  int rank) {
   long sum = 0;
@@ -99,7 +122,7 @@ void getLastElementPrefixSum(long *input, long endIndex,
   input[endIndex - 1] += initalLastElement;
 }
 
-void prefixSum(long *input, long size, int argc, char **argv) {
+void prefixSum(long *input, long *original, long size, int argc, char **argv) {
   // variables to be initialized
   int rank;
   int numOfProcesses;
@@ -111,6 +134,11 @@ void prefixSum(long *input, long size, int argc, char **argv) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &numOfProcesses);
   // start timing code here
+  if (rank == 0) {
+    generateRandomNumbers(input, size);
+    arrayCopy(input, original, size);
+  }
+  MPI_Bcast(input, size, MPI_LONG, 0, MPI_COMM_WORLD);
   double timeStart = MPI_Wtime();
 
   // get starting and ending indexes of calculations for each process
@@ -120,33 +148,30 @@ void prefixSum(long *input, long size, int argc, char **argv) {
   long endValue = input[endIndex - 1];
 
   // calculate processSum
-  // this is correct
   getProcessSum(input, size, &processSum, chunkSize, rank);
   MPI_Allgather(&processSum, 1, MPI_LONG, processSumArray, 1, MPI_LONG,
                 MPI_COMM_WORLD);
   // calculate prefix sum
   upSweep(input, chunkSize, startIndex, endIndex);
-  // printArray(input, startIndex, endIndex);
   downSweep(input, chunkSize, startIndex, endIndex);
 
   shiftArrayToLeft(input, startIndex, endIndex);
   getLastElementPrefixSum(input, endIndex, endValue);
   applyOffset(input, startIndex, endIndex, processSumArray, rank);
-  // printf("%ld",processSum);
-  // printArray(input , startIndex, endIndex);
   // you thought of basically sending a pointer starting at the end index for
   // each thing and then iterating over chunk elements
-  // stop timing code here
   // gathers all the data from each array into one array
   MPI_Gather(&input[startIndex], chunkSize, MPI_LONG, &inputFinal[startIndex],
              chunkSize, MPI_LONG, 0, MPI_COMM_WORLD);
   MPI_Barrier(MPI_COMM_WORLD);
+  // stop timing code here
   double timeStop = MPI_Wtime();
   double timeTaken = timeStop - timeStart;
 
   // print out time taken
   if (rank == 0) {
-    printf("%f", timeTaken);
+    printf("%f\n", timeTaken);
+    correctnessAssertion(inputFinal, original, size);
     // printArray(processSumArray, 0, numOfProcesses);
     // printArray(inputFinal, 0, size);
   }
@@ -156,23 +181,13 @@ void prefixSum(long *input, long size, int argc, char **argv) {
 int main(int argc, char *argv[]) {
   // reads in arguments, initializes variables, sets up necessary details for
   // the rest of the program
-  char *inputFile = argv[1];
-  long inputFileSize;
-  long inputArraySize;
-  FILE *file = fopen(inputFile, "r");
-  getFileSize(&inputFileSize, file);
+  long inputSize = pow(2, atol(argv[1]));
   // reason why it's -1 is because reads in terminating character '\0' which is
   // not apart of the sequence
-  inputArraySize = inputFileSize - 1;
-
-  char *inputFromFile = (char *)malloc(inputArraySize * sizeof(char));
-  long *input = (long *)malloc(inputArraySize * sizeof(long));
-
-  readFile(inputFromFile, inputFileSize, file);
-  convertCharToIntArray(inputFromFile, input, inputArraySize);
-
+  long *input = (long *)malloc(inputSize * sizeof(long));
+  long *original = (long *)malloc(inputSize * sizeof(long));
   // put algorithm here
-  prefixSum(input, inputArraySize, argc, argv);
+  prefixSum(input, original, inputSize, argc, argv);
 
   return 0;
 }

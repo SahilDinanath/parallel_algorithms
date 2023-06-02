@@ -8,18 +8,12 @@ void printArray(long input[], long startIndex, long endIndex) {
     printf("%ld ", input[i]);
   }
 }
-void readFile(char *line, long size, FILE *fileName) {
-  fgets(line, size, fileName);
-  fclose(fileName);
-}
-void getFileSize(long *size, FILE *fileName) {
-  fseek(fileName, 0L, SEEK_END);
-  *size = ftell(fileName);
-  fseek(fileName, 0L, SEEK_SET);
-}
-void convertCharToIntArray(char *fileCharacters, long *input, long size) {
-  for (long i = 0; i < size; i++) {
-    input[i] = fileCharacters[i] - '0';
+void generateRandomNumbers(long *input, long size) {
+  int lower = 0;
+  int upper = 9;
+
+  for (int i = 0; i < size; i++) {
+    input[i] = (rand() % (upper - lower + 1)) + lower;
   }
 }
 
@@ -67,18 +61,17 @@ void getLastElementPrefixSum(long *input, long size, long initalLastElement) {
 }
 
 void prefixSum(long *input, long size) {
-  // long tempLastElement = input[size - 1];
+  long tempLastElement = input[size - 1];
   upSweep(input, size);
   downSweep(input, size);
-  // shiftArrayToLeft(input, size);
-  // getLastElementPrefixSum(input, size, tempLastElement);
+  shiftArrayToLeft(input, size);
+  getLastElementPrefixSum(input, size, tempLastElement);
 }
 
 void serialPrefixSum(long *original, long size) {
   for (long i = 1; i < size; i++) {
     original[i] += original[i - 1];
   }
-  printArray(original,0,size);
 }
 int compareArrays(long *input, long *original, long size) {
   for (int i = 0; i < size; i++) {
@@ -97,6 +90,7 @@ void correctnessAssertion(long *input, long *original, long size) {
     printf("Results are incorrect");
   }
 }
+
 void arrayCopy(long *source, long *destination, long size) {
   for (long i = 0; i < size; i++) {
     destination[i] = source[i];
@@ -105,26 +99,19 @@ void arrayCopy(long *source, long *destination, long size) {
 int main(int argc, char *argv[]) {
   // reads in arguments, initializes variables, sets up necessary details for
   // the rest of the program
-  char *inputFile = argv[1];
-  long inputFileSize;
-  long inputArraySize;
-  FILE *file = fopen(inputFile, "r");
-  getFileSize(&inputFileSize, file);
-  inputArraySize = inputFileSize;
+  long inputSize = pow(2, atol(argv[1]));
 
-  char *inputFromFile = (char *)malloc(inputArraySize * sizeof(char));
-  long *input = (long *)malloc(inputArraySize * sizeof(long));
-  // long *original = (long *)malloc(inputArraySize * sizeof(long));
-  printf("%ld\n",inputArraySize);
-  
-  readFile(inputFromFile, inputFileSize, file);
-  convertCharToIntArray(inputFromFile, input, inputArraySize);
-  // arrayCopy(input, original, inputArraySize);
+  long *input = (long *)malloc(inputSize * sizeof(long));
+  long *original = (long *)malloc(inputSize * sizeof(long));
+
+  generateRandomNumbers(input, inputSize);
+  arrayCopy(input, original, inputSize);
+
   // start timing code here
   double timeStart = omp_get_wtime();
 
   // put algorithm here
-  prefixSum(input, inputArraySize);
+  prefixSum(input, inputSize);
 
   // stop timing code here
   double timeStop = omp_get_wtime();
@@ -133,7 +120,7 @@ int main(int argc, char *argv[]) {
   // print out time taken
   printf("%f\n", timeTaken);
   // do correctnessAssertion here
-  // correctnessAssertion(input, original, inputArraySize);
-  printArray(input, 0, inputArraySize);
+  correctnessAssertion(input, original, inputSize);
+  // printArray(input, 0, inputSize);
   return 0;
 }
