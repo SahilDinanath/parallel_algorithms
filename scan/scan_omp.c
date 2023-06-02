@@ -17,9 +17,9 @@ void generateRandomNumbers(long *input, long size) {
   }
 }
 
-void upSweep(long input[], long size) {
+void upSweep(long input[], long chunkSize, long startIndex, long endIndex) {
   long previous, next;
-  long treeDepth = ceil(log2(size));
+  long treeDepth = ceil(log2(chunkSize));
   int increment = 0;
   int previousIncrement = 0;
   for (long i = 0; i < treeDepth; i++) {
@@ -29,7 +29,7 @@ void upSweep(long input[], long size) {
                                                                       next)
     {
 #pragma omp for
-      for (long j = 0; j < size; j += increment) {
+      for (long j = startIndex; j < endIndex; j += increment) {
         previous = j + previousIncrement - 1;
         next = j + increment - 1;
         input[next] = input[previous] + input[next];
@@ -38,10 +38,10 @@ void upSweep(long input[], long size) {
   }
 }
 
-void downSweep(long input[], long size) {
+void downSweep(long input[], long chunkSize,long startIndex,long endIndex) {
   long previous, next, temp;
-  input[size - 1] = 0;
-  long treeDepth = ceil(log2(size));
+  input[endIndex- 1] = 0;
+  long treeDepth = ceil(log2(chunkSize));
   int increment = 0;
   int previousIncrement = 0;
   for (long i = treeDepth - 1; i >= 0; i--) {
@@ -51,7 +51,7 @@ void downSweep(long input[], long size) {
         previous, next, temp)
     {
 #pragma omp for
-      for (long j = 0; j < size; j += increment) {
+      for (long j = startIndex; j < endIndex; j += increment) {
         previous = j + previousIncrement - 1;
         next = j + increment - 1;
         temp = input[previous];
@@ -61,21 +61,77 @@ void downSweep(long input[], long size) {
     }
   }
 }
-void shiftArrayToLeft(long *input, long size) {
-  for (long i = 1; i < size; i++) {
+
+void shiftArrayToLeft(long *input, long startIndex, long endIndex) {
+  startIndex++;
+  #pragma omp parallel for shared(startIndex,endIndex)
+  for (long i = startIndex; i < endIndex; i++) {
     input[i - 1] = input[i];
   }
 }
-void getLastElementPrefixSum(long *input, long size, long initalLastElement) {
-  input[size - 1] += initalLastElement;
+void getLastElementPrefixSum(long *input, long endIndex,
+                             long initalLastElement) {
+  input[endIndex - 1] += initalLastElement;
 }
 
-void prefixSum(long *input, long size) {
-  long tempLastElement = input[size - 1];
-  upSweep(input, size);
-  downSweep(input, size);
-  shiftArrayToLeft(input, size);
-  getLastElementPrefixSum(input, size, tempLastElement);
+
+long getStartIndex(int rank, long size, int numOfProcesses) {
+  return floor((rank * size) / (float)numOfProcesses);
+}
+
+long getEndIndex(int rank, long size, int numOfProcesses) {
+  return floor(((rank + 1) * size) / (float)numOfProcesses);
+}
+long getChunkSize(long size, int numOfProcesses) {
+  return size / numOfProcesses;
+}
+void getProcessSum(long input[], long size, long *processSum, long chunkSize,
+                   int rank) {
+  if (rank == 0) {
+    *processSum = 0;
+    return;
+  }
+  int start = (rank - 1) * chunkSize;
+  int end = rank * chunkSize;
+  
+  #pragma omp parallel for shared(start,end)
+  for (int i = start; i < end; i++) {
+    *processSum += input[i];
+  }
+}
+void applyOffset(long input[], long startIndex, long endIndex, long *processSum,
+                 int rank) {
+  long sum = 0;
+  for (int j = 0; j < rank + 1; j++) {
+    sum += processSum[j];
+  }
+  #pragma omp parallel for shared(startIndex,endIndex)
+  for (int i = startIndex; i < endIndex; i++) {
+    input[i] += sum;
+  }
+}
+
+void prefixSum(long *input, long size, int threads) {
+  long *processSumArray = (long *)malloc(threads * sizeof(long));
+
+#pragma omp parallel firstprivate(input) shared(processSumArray)
+  {
+    int numOfProcesses = omp_get_num_threads();
+    int rank = omp_get_thread_num();
+    long chunkSize = getChunkSize(size, numOfProcesses);
+    long startIndex = getStartIndex(rank, size, numOfProcesses);
+    long endIndex = getEndIndex(rank, size, numOfProcesses);
+    long endValue = input[endIndex - 1];
+    long processSum = 0;
+    getProcessSum(input, size, &processSum, chunkSize, rank);
+    processSumArray[rank] = processSum;  
+    #pragma omp barrier
+    upSweep(input, chunkSize,startIndex,endIndex);
+    downSweep(input, chunkSize,startIndex,endIndex);
+    shiftArrayToLeft(input,startIndex,endIndex);
+    getLastElementPrefixSum(input,endIndex, endValue);
+    applyOffset(input,startIndex,endIndex,processSumArray,rank);
+  }
 }
 
 void serialPrefixSum(long *original, long size) {
@@ -124,7 +180,7 @@ int main(int argc, char *argv[]) {
   double timeStart = omp_get_wtime();
 
   // put algorithm here
-  prefixSum(input, inputSize);
+  prefixSum(input, inputSize, threads);
 
   // stop timing code here
   double timeStop = omp_get_wtime();
