@@ -2,6 +2,7 @@
 
 file_name=graph_6.txt
 threads=2
+processes=2
 
 make clean
 make all
@@ -13,22 +14,49 @@ cd ../
 echo "========================"
 echo "Results of SSSP Dijkstra Implementations"
 echo "========================"
-
-echo "sssp:"
-./sssp ${file_name}
-
-mpirun -np 2 ./sssp_mpi ${file_name} | tail -n 1 >> times.txt
-# Execute SSSP four times and pipe the last line of output to times.txt
+> times.txt
+> speedup.txt
+# Run sssp four times and append the last line of output to times.txt
 for i in {1..4}
 do
-    ./sssp "${file_name}" | tail -n 1 >> times.txt
+    output=$(./sssp ${file_name})
+    echo "$output"
+    echo "$output" | tail -n 1 >> times.txt
 done
-
-# Run Python script to calculate average of execution times
-python3 average.py
-# cat times.txt
+out=$(python3 average.py)
+echo "$out"
+echo "$out" >> speedup.txt
 > times.txt
-rm "$file_name"
 
-# sssp_omp
+echo ""
 echo "sssp_omp:"
+
+# Run sssp_omp four times and append the last line of output to times.txt
+for i in {1..4}
+do
+    output=$(./sssp_omp ${file_name} ${threads})
+    echo "$output"
+    echo "$output" | tail -n 1 >> times.txt
+done
+out=$(python3 average.py)
+echo "$out"
+echo "$out" >> speedup.txt
+> times.txt
+
+echo ""
+echo "sssp_mpi:"
+
+# Run sssp_mpi four times and append the last line of output to times.txt
+for i in {1..4}
+do
+    output=$(mpirun -np ${processes} ./sssp_mpi ${file_name})
+    echo "$output"
+    echo "$output" | tail -n 1 >> times.txt
+done
+out=$(python3 average.py)
+echo "$out"
+echo "$out" >> speedup.txt
+> times.txt
+python3 speedup.py
+
+rm ${file_name}
