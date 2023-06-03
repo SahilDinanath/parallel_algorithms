@@ -94,12 +94,13 @@ void dijkstra(int rank, int size, int *graph, int n, int source) {
   if (rank == 0) {
     allVertices = (Vertex *)malloc(n * sizeof(int) * size);
   }
+
   MPI_Gather(vertices, n, MPI_INT, allVertices, n, MPI_INT, 0, MPI_COMM_WORLD);
   // Uncomment to display shortest paths length and path
   // Print the shortest paths
   // printShortestPaths(vertices, n, source);
   // printf("%lf", timeTaken);
-  printf("\n");
+  // printf("\n");
 
   free(vertices); // Free the dynamically allocated memory
 }
@@ -165,8 +166,9 @@ int main(int argc, char *argv[]) {
 
   double timeEnd= MPI_Wtime();
   double timeTaken = timeEnd - timeStart;
+  if(rank ==0){
   printf("%f",timeTaken);
-  printf("\n");
+  }
   MPI_Finalize();
   free(local_graph);
   return 0;
