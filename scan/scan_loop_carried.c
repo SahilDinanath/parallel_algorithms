@@ -30,7 +30,7 @@ void prefixSum(long *input, long size) {
 int main(int argc, char *argv[]) {
   // reads in arguments, initializes variables, sets up necessary details for
   // the rest of the program
-  long inputSize = atol(argv[1]);
+  long inputSize = pow(2,atol(argv[1]));
   long *input = (long *)malloc(inputSize * sizeof(long));
   generateRandomNumbers(input, inputSize);
   // start timing code here
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
   double timeTaken = timeStop - timeStart;
 
   // print out time taken
-  //  printf("%f",timeTaken);
-  printArray(input, 0, inputSize);
+   printf("%f",timeTaken);
+  // printArray(input, 0, inputSize);
 
   printf("\n");
   return 0;
