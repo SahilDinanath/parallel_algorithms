@@ -84,14 +84,15 @@ void dijkstra(int rank, int size, int *graph, int n, int source) {
           vertices[minIndex].weight != INFINITY &&
           vertices[minIndex].weight + graph[minIndex * n + j] <
               vertices[j].weight) {
-        vertices[j].weight = vertices[minIndex].weight + graph[minIndex*n+j];
+        vertices[j].weight =
+            vertices[minIndex].weight + graph[minIndex * n + j];
         vertices[j].previous = minIndex;
       }
     }
   }
-  Vertex* allVertices = NULL;
-  if(rank == 0){
-    allVertices = (Vertex*)malloc(n*sizeof(int)*size);
+  Vertex *allVertices = NULL;
+  if (rank == 0) {
+    allVertices = (Vertex *)malloc(n * sizeof(int) * size);
   }
   MPI_Gather(vertices, n, MPI_INT, allVertices, n, MPI_INT, 0, MPI_COMM_WORLD);
   // Uncomment to display shortest paths length and path
@@ -143,22 +144,29 @@ int main(int argc, char *argv[]) {
 
     fclose(input_file);
 
-    flattenedGraph = (int *)malloc(m * n * sizeof(int));
+    flattenedGraph = (int *)malloc(n * n * sizeof(int));
     for (int i = 0; i < n; i++) {
-      for (int j = 0; j < m; j++) {
+      for (int j = 0; j < n; j++) {
         flattenedGraph[i * n + j] = graph[i][j];
       }
     }
   }
-  int *local_graph = (int *)malloc(n * m / numOfProcesses * sizeof(int));
-  MPI_Scatter(flattenedGraph, (n * m) / numOfProcesses, MPI_INT, local_graph,
-              n * m, MPI_INT, 0, MPI_COMM_WORLD);
+  int timeStart = MPI_Wtime();
+  MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  int* local_graph = (int *)malloc(n * n / numOfProcesses * sizeof(int));
+  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Scatter(flattenedGraph, (n * n) / numOfProcesses, MPI_INT, local_graph,
+              n * n, MPI_INT, 0, MPI_COMM_WORLD);
   // Uncomment to give user input source vertex
   //  int source;
   //  printf("Enter the source vertex: ");
   //  scanf("%d", &source);
   dijkstra(rank, numOfProcesses, local_graph, n, 0);
 
+  double timeEnd= MPI_Wtime();
+  double timeTaken = timeEnd - timeStart;
+  printf("%f",timeTaken);
+  printf("\n");
   MPI_Finalize();
   free(local_graph);
   return 0;
