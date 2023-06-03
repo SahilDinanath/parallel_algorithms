@@ -75,3 +75,9 @@ bitonicsort/input_2_18.txt
 bitonicsort/input_2_21.txt
 sssp_dijkstra/.vscode
 sssp_dijkstra/graph_10.txt
+report/main.aux
+report/main.fdb_latexmk
+report/main.fls
+report/main.log
+report/main.pdf
+report/main.synctex.gz
