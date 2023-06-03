@@ -1,5 +1,5 @@
 #!/bin/bash
-./unix.sh
+# ./unix.sh
 
 cd scan
 ./run.sh

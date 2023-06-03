@@ -7,6 +7,7 @@ void printArray(long input[], long startIndex, long endIndex) {
   for (long i = startIndex; i < endIndex; i++) {
     printf("%ld ", input[i]);
   }
+  printf("\n");
 }
 void generateRandomNumbers(long *input, long size) {
   int lower = 0;
@@ -34,9 +35,9 @@ void correctnessAssertion(long *input, long *original, long size) {
   serialPrefixSum(original, size);
   int result = compareArrays(input, original, size);
   if (result == 1) {
-    printf("Results are correct");
+    printf("Results are correct\n");
   } else {
-    printf("Results are incorrect");
+    printf("Results are incorrect\n");
   }
 }
 void arrayCopy(long *source, long *destination, long size) {
@@ -169,10 +170,10 @@ void prefixSum(long *input, long *original, long size, int argc, char **argv) {
 
   // print out time taken
   if (rank == 0) {
-    printf("%f\n", timeTaken);
     correctnessAssertion(inputFinal, original, size);
     // printArray(processSumArray, 0, numOfProcesses);
     // printArray(inputFinal, 0, size);
+    printf("%f\n", timeTaken);
   }
   MPI_Finalize();
 }

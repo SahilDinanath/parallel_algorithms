@@ -1,8 +1,8 @@
 import random
 
-file = open("input_2_3.txt","w")
+file = open("input_2_16.txt","w")
 
-for i in range(2**3):
+for i in range(2**16):
     line = str(random.randint(0,9))
     file.write(line)
 

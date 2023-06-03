@@ -8,6 +8,7 @@ void printArray(long input[], long startIndex, long endIndex) {
   for (long i = startIndex; i < endIndex; i++) {
     printf("%ld ", input[i]);
   }
+  printf("\n");
 }
 void generateRandomNumbers(long *input, long size) {
   int lower = 0;
@@ -88,9 +89,9 @@ void correctnessAssertion(long *input, long *original, long size) {
   serialPrefixSum(original, size);
   int result = compareArrays(input, original, size);
   if (result == 1) {
-    printf("Results are correct");
+    printf("Results are correct\n");
   } else {
-    printf("Results are incorrect");
+    printf("Results are incorrect\n");
   }
 }
 
@@ -120,10 +121,10 @@ int main(int argc, char *argv[]) {
   double timeStop = omp_get_wtime();
   double timeTaken = timeStop - timeStart;
 
-  // print out time taken
-  printf("%f\n", timeTaken);
   // do correctnessAssertion here
   correctnessAssertion(input, original, inputSize);
+  // print out time taken
   // printArray(input, 0, inputSize);
+  printf("%f\n", timeTaken);
   return 0;
 }
