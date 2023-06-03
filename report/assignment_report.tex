@@ -42,7 +42,33 @@ int main(int argc, char *argv[]) {
 }
 \end{lstlisting}
 
-\subsubsection{Testing}
+The sorting algorithm used in this test is the iterative bitonic sort. It consists of two main functions: \texttt{iterativeBitonicSort} and \texttt{compareArrays}.
+
+The \texttt{iterativeBitonicSort} function implements the iterative bitonic sort algorithm, which performs a series of comparisons and swaps on the input array to sort it in ascending order.
+
+The \texttt{compareArrays} function compares two arrays element by element and returns a result indicating whether the arrays are identical or not.
+
+\subsection*{Correctness Assertion}
+
+To test the correctness of the sorting algorithm, we perform the following steps:
+
+\begin{enumerate}
+  \item Read in random input and store it in an array.
+  \item Create a copy of the input array using the \texttt{arrayCopy} function.
+  \item Call the \texttt{iterativeBitonicSort} function to sort the copied array.
+  \item Compare the sorted array with the original input array using the \texttt{compareArrays} function.
+  \item If the result is \texttt{1}, the arrays are identical, and the sorting algorithm is correct. Otherwise, if the result is \texttt{0}, the arrays differ, indicating an error in the sorting process.
+\end{enumerate}
+
+\subsubsection*{Example 1}
+
+Input array: [5, 3, 1, 4, 2]
+
+Sorted array: [1, 2, 3, 4, 5]
+
+Result: Correct
+\subsection*{Testing}
+
 The code begins by reading the input file and converting the characters to integers. This section of the code consists of the following functions:
 
 \begin{itemize}
@@ -51,7 +77,19 @@ The code begins by reading the input file and converting the characters to integ
   \item \texttt{convertCharToIntArray}: This function converts the character array \texttt{fileCharacters} into an array of long integers \texttt{input} by subtracting the ASCII value of \texttt{'0'} from each character.
 \end{itemize}
 
-\subsubsection{Results}
+\subsection*{Results}
+
+After testing the sorting algorithm on various input arrays, we found that...
+
+
+\subsection*{Conclusion}
+
+Based on the results of the correctness testing, we can conclude that the iterative bitonic sort algorithm produces correct and accurate sorting results. The algorithm successfully sorts the input array in ascending order, preserving the integrity of the original elements.
+
+
+
+
+\subsubsection*{Results}
 The Bitonic Sort algorithm is then applied to the input array using the \texttt{bitonicSort} function. The execution time of the sorting process is measured using the \texttt{omp\_get\_wtime} function. Finally, the sorted array is printed using the \texttt{printArray} function, and the total execution time is displayed.
 \begin{table}[htb]
 	\centering

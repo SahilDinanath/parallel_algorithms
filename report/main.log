@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.8) (preloaded format=pdflatex 2022.8.23)  31 MAY 2023 16:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.8) (preloaded format=pdflatex 2022.8.23)  3 JUN 2023 07:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -935,7 +935,7 @@ Overfull \hbox (31.57391pt too wide) in paragraph at lines 18--19
 []\T1/ptm/m/n/10 For ex-am-ple, the in-put set is $\OT1/ztmcm/m/n/10 [2\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 1\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 4\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 0\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 3\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 7\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 6\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 3]$\T1/ptm/m/n/10 , then the scan with ad-di-tion op-er-a-tor of this in-put is $\OT1/ztmcm/m/n/10 [2\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 3\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 7\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 7\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 10\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 17\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 23\OML/ztmcm/m/it/10 ; \OT1/ztmcm/m/n/10 26]$\T1/ptm/m/n/10 . 
  []
 
-<pics/witslogo_h.png, id=66, 1030.85126pt x 640.3925pt>
+<pics/witslogo_h.png, id=58, 1030.85126pt x 640.3925pt>
 File: pics/witslogo_h.png Graphic file (type png)
 <use pics/witslogo_h.png>
 Package pdftex.def Info: pics/witslogo_h.png  used on input line 25.
@@ -957,31 +957,36 @@ File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 35.
- [2] [3]
-<pics/sp_fig1.png, id=107, 943.525pt x 473.77pt>
+
+Overfull \hbox (17.2831pt too wide) in paragraph at lines 45--46
+[]\T1/ptm/m/n/10 The sort-ing al-go-rithm used in this test is the it-er-a-tive bitonic sort. It con-sists of two main func-tions: \T1/cmtt/m/n/10 iterativeBitonicSort
+ []
+
+[2] [3]
+<pics/sp_fig1.png, id=109, 943.525pt x 473.77pt>
 File: pics/sp_fig1.png Graphic file (type png)
 <use pics/sp_fig1.png>
-Package pdftex.def Info: pics/sp_fig1.png  used on input line 80.
+Package pdftex.def Info: pics/sp_fig1.png  used on input line 118.
 (pdftex.def)             Requested size: 239.00319pt x 120.01093pt.
  [4 <./pics/sp_fig1.png>] (main.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: D4F929270BC9BF0D1EE8E4FF5A1F8C21;1677.
+(rerunfilecheck)             Checksum: 3D5109FA63222098345744C755E106BA;1471.
  ) ) 
 Here is how much of TeX's memory you used:
- 27676 strings out of 477992
- 514239 string characters out of 2827466
- 1043399 words of memory out of 3000000
+ 27685 strings out of 477992
+ 514295 string characters out of 2827466
+ 1042398 words of memory out of 3000000
  45865 multiletter control sequences out of 15000+600000
  527684 words of font info for 130 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,16n,89p,476b,1231s stack positions out of 10000i,1000n,20000p,200000b,80000s
  <C:\Users\darsh\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk> <C:\Users\darsh\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecit1000.pk>{C:/Users/darsh/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:/Users/darsh/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/darsh/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/darsh/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/darsh/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/darsh/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/darsh/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (4 pages, 252490 bytes).
+Output written on main.pdf (4 pages, 255403 bytes).
 PDF statistics:
- 232 PDF objects out of 1000 (max. 8388607)
- 38 named destinations out of 1000 (max. 500000)
- 143 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 238 PDF objects out of 1000 (max. 8388607)
+ 47 named destinations out of 1000 (max. 500000)
+ 127 words of extra memory for PDF output out of 10000 (max. 10000000)
 
