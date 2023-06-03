@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# options for running files
+# Options for running files
 power_of_two=18
-threads=2
+threads=4
 processes=4
 
 make clean
@@ -11,6 +11,7 @@ make all
 echo "========================"
 echo "Results of Scan Implementations"
 echo "========================"
+echo ""
 echo "scan:"
 > times.txt
 > speedup.txt
@@ -58,7 +59,8 @@ echo "$out" >> speedup.txt
 
 echo ""
 echo "========================"
-
+echo "Average Speedups"
+echo "========================"
 # Calculate speedup between the first average time and the other two times
 python3 speedup.py
-> speedup.txt
+

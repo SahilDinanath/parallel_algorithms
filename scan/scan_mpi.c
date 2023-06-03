@@ -140,7 +140,6 @@ void prefixSum(long *input, long *original, long size, int argc, char **argv) {
     arrayCopy(input, original, size);
   }
   MPI_Bcast(input, size, MPI_LONG, 0, MPI_COMM_WORLD);
-  double timeStart = MPI_Wtime();
 
   // get starting and ending indexes of calculations for each process
   long chunkSize = getChunkSize(size, numOfProcesses);
@@ -148,6 +147,7 @@ void prefixSum(long *input, long *original, long size, int argc, char **argv) {
   long endIndex = getEndIndex(rank, size, numOfProcesses);
   long endValue = input[endIndex - 1];
 
+  double timeStart = MPI_Wtime();
   // calculate processSum
   getProcessSum(input, size, &processSum, chunkSize, rank);
   MPI_Allgather(&processSum, 1, MPI_LONG, processSumArray, 1, MPI_LONG,
@@ -159,14 +159,14 @@ void prefixSum(long *input, long *original, long size, int argc, char **argv) {
   shiftArrayToLeft(input, startIndex, endIndex);
   getLastElementPrefixSum(input, endIndex, endValue);
   applyOffset(input, startIndex, endIndex, processSumArray, rank);
+  double timeStop = MPI_Wtime();
+  double timeTaken = timeStop - timeStart;
   // you thought of basically sending a pointer starting at the end index for
   // each thing and then iterating over chunk elements
   // gathers all the data from each array into one array
   MPI_Gather(&input[startIndex], chunkSize, MPI_LONG, &inputFinal[startIndex],
              chunkSize, MPI_LONG, 0, MPI_COMM_WORLD);
   // stop timing code here
-  double timeStop = MPI_Wtime();
-  double timeTaken = timeStop - timeStart;
 
   // print out time taken
   if (rank == 0) {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file_name=graph_6.txt
+file_name="graph_6.txt"
 threads=2
 processes=2
 
@@ -14,6 +14,8 @@ cd ../
 echo "========================"
 echo "Results of SSSP Dijkstra Implementations"
 echo "========================"
+echo ""
+echo "sssp_omp:"
 > times.txt
 > speedup.txt
 # Run sssp four times and append the last line of output to times.txt
@@ -57,6 +59,11 @@ out=$(python3 average.py)
 echo "$out"
 echo "$out" >> speedup.txt
 > times.txt
+
+echo ""
+echo "========================"
+echo "Average Speedups"
+echo "========================"
 python3 speedup.py
 
 rm ${file_name}

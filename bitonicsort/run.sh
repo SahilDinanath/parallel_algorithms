@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Options for running files
-file_name="input_2_16.txt"
+file_name="input_2_18.txt"
 threads=4
 processes=4
 
@@ -11,10 +11,18 @@ make all
 echo "========================"
 echo "Results of Bitonic Sort Implementations"
 echo "========================"
-# only uncomment when using <18
-python3 randomarrays.py
+echo ""
+# Extract the value of num from the file_name
+num=$(echo "$file_name" | sed -n 's/input_2_\([0-9]*\)\.txt/\1/p')
+
+if (( num <= 18 )); then
+  python3 randomarrays.py
+else
+  echo "Reading from pre-generated file"
+fi
 > times.txt
 > speedup.txt
+echo ""
 echo "bitonic:"
 for i in {1..4} 
 do
@@ -27,7 +35,7 @@ output=$(python3 average.py)
 echo "$output"
 echo "$output" >> speedup.txt
 > times.txt
-
+echo ""
 echo "bitonic_omp:"
 for i in {1..4} 
 do
@@ -41,6 +49,7 @@ echo "$output"
 echo "$output" >> speedup.txt
 > times.txt
 
+echo ""
 echo "bitonic_mpi:"
 for i in {1..4} 
 do
@@ -54,10 +63,10 @@ echo "$output"
 echo "$output" >> speedup.txt
 > times.txt
 
+echo ""
 echo "========================"
 echo "Average Speedups"
 echo "========================"
 
 # Calculate speedup between the first average time and the other two times
 python3 speedup.py
-> speedup.txt
