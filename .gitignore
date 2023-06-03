@@ -61,3 +61,15 @@ scan/scan_mpi
 scan/scan_omp
 sssp_dijkstra/sssp
 sssp_dijkstra/sssp_omp
+bitonicsort/speedup.txt
+bitonicsort/times.txt
+scan/speedup.txt
+scan/times.txt
+sssp_dijkstra/times.txt
+bitonicsort/bitonic
+bitonicsort/bitonic_mpi
+bitonicsort/bitonic_omp
+bitonicsort/input_2_12.txt
+bitonicsort/input_2_16.txt
+bitonicsort/input_2_18.txt
+bitonicsort/input_2_21.txt
