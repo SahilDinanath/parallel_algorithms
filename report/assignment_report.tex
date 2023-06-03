@@ -1,7 +1,7 @@
 \begin{document}
 \title{COMS3008A Assignment -- Report}
 \author{Sahil Dinanath, Darshan Singh}
-\date{Put your submission date here} 
+\date{5 June 2023} 
 \maketitle 
 %\thispagestyle{empty}
 \pagestyle{fancy}
@@ -19,8 +19,78 @@
 \end{itemize}
 \subsection*{Approach}
 \subsection{Serial} 
-\subsection{OpenMP} 
+\subsection*{strategy:}
+The approach that was chosen to represent the serial implementation of the prefix scan algorithm was the serial workefficient implementation of blelloch's algorithm which is shown in Listing \ref{lst:scan_serial_blelloch}. 
+\begin{lstlisting}[language=C, caption={upsweep and downsweep pseudocode}, label={lst:scan_serial_blelloch}]
+
+upsweep(inputArray,n):
+	for d = 0 to log2(n) - 1 do
+    	for k = 0 to n - 1 by 2^(d+1) do
+        	inputArray[k + 2^(d+1) - 1] += inputArray[k + 2^d - 1]
+
+
+downsweep(inputArray,n):
+	input[n-1] = 0
+	for d = log2(n) - 1 down to 0 do 
+		for k = 0 to n - 1 by 2^(d+1)do 
+			temp = inputArray[k + 2^d - 1] 
+			inputArray[k + 2^d - 1] = inputArray[k + 2^(d+1) - 1]
+			inputArray[k + 2^(d+1) - 1] += temp
+
+\end{lstlisting}
+The idea as stated in \href{https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda}{Parallel Prefix Sum with Cuda} is to build a balanced binary tree with n leaves and log2(n) levels
+
+\subsection*{pseudocode:} 
+\subsection{OpenMP}
+\subsection*{parallization method:}
+The serial implementation of blelloch's algorithm was used as the base for the OMP parallel implementation, with largely the core algorithm staying the same. However, the differences being with how the algorithm processed a single array. The first most obvious parallisation method is to parallise the inner for loops in both the upsweep and downsweep of the algorithm, see Listing \ref{lst:scan_parallisation_inner_loop} 
+\begin{lstlisting}[language=C, caption={parallisation of the inner loop}, label={lst:scan_parallisation_inner_loop}]
+...
+		for k = 0 to n - 1 by 2^(d+1) in parallel do
+...
+\end{lstlisting}
+this allows for the summations at each depth to be parallized. The issue with this method is that at each level the amount of elements that needs to be computed is halved, hence the algorithm becomes more serial as it progresses as there is less elements to split between the cores for both the up and down sweep.\\\\ The second parallization strategy was to take the input array, break it up into chunks and have each processor perform it's own up and down sweep on it's section of the array. This would expose more concurrency as at each depth all the processors can be acting on their chunk of the array, in contrast to the original method where at the highest depth only 1 processor will be able to act.\\This was achieved using a processor sum, which is the summation of each chunk given to each processor. Each processor then perform the up and down sweep on their respective chunk. Finally each processor adds their processor sum to each element of their array. 
+eg: $[a_0,(a_0+a_1),(a_0+a_1+a_3),(a_0+a_1+a_3+a_4)]$\\
+\\ assume 2 processors hence 2 chunks:\\
+$[a_0,(a_0+a_1),(a_0+a_1+a_3)]$,\\$[(a_0+a_1+a_3+a_4),\dots]$\\
+\\let $processorSum_0 = a_0+a_1+a_3$ therefore\\
+$[(processorSum_0+a_4),(processorSum_0 + a_4 +a_5),\dots] $\\\\hence for each$ [(a_4),(a_4 +a_5),\dots]$ add $processorSum_0$\\
+as you can see now each chunk is independant of eachother meaning we can now perform the up and down sweep independantly and concurrently on each processor. See Listing \ref{lst:scan_second_parallization_method} 
+\begin{lstlisting}[language=C, caption={Serial Sequenctial Scan Algorithm with + operator}, label={lst:scan_second_parallization_method}]
+getProcessSum(inputArray, size, processSum, chunkSize,rank){ 
+	if (rank == 0):  
+		processSum = 0 
+		return 
+	 
+	start = (rank-1) * chunkSize 
+	end = rank * chunkSize
+	
+	for i = start to end-1 by i+1 in parallel do
+		processSum += input[i];
+	 
+applyOffset(inputArray, startIndex, endIndex, processSum,rank){ 
+	sum = 0 
+	for j = 0 to rank by j+1
+		sum += processSum[j] 
+		
+	for i = startIndex to endIndex by i+1
+		inputArray[i] += sum
+		
+\end{lstlisting}
 \subsection{MPI}
+\subsection{Testing Methods}
+
+\subsection{Correctness}
+\subsection{performance evaluation}
+The correctness of the algorithm was determined by a simple sequential serial algorithm for computing scan operations shown in Listing \ref{lst:scan_correctness}
+\begin{lstlisting}[language=C, caption={Serial Sequenctial Scan Algorithm with + operator}, label={lst:scan_correctness}]
+void prefixSum(long *input, long size) { 
+	for (long i = 1; i < size; i++) {
+		input[i] += input[i - 1]; 
+	} 
+}
+\end{lstlisting}
+This was done to guarentee correctness on all implementations of the blelloch's algorithm.
 \pagebreak
 \section{Problem 2: Parallel Bitonic Sort}
 \subsection*{Approach}
