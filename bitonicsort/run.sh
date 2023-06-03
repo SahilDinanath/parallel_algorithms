@@ -11,7 +11,7 @@ make all
 echo "========================"
 echo "Results of Bitonic Sort Implementations"
 echo "========================"
-# only uncomment when using <10
+# only uncomment when using <18
 python3 randomarrays.py
 > times.txt
 > speedup.txt
