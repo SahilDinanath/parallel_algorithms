@@ -61,3 +61,5 @@ scan/scan_mpi
 scan/scan_omp
 sssp_dijkstra/sssp
 sssp_dijkstra/sssp_omp
+sssp_dijkstra/.vscode
+sssp_dijkstra/graph_10.txt
