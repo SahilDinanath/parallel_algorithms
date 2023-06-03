@@ -189,8 +189,8 @@ int main(int argc, char *argv[]) {
   double timeStop = omp_get_wtime();
   double timeTaken = timeStop - timeStart;
 
-  printArray(input, 0, inputSize);
   correctnessAssertion(input, original, inputSize);
+  // printArray(input, 0, inputSize);
   // print out time taken
   printf("%f\n", timeTaken);
   return 0;

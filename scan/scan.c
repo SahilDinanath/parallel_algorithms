@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
   // do correctnessAssertion here
   correctnessAssertion(input, original, inputSize);
   // print out time taken
-  printArray(input, 0, inputSize);
+  // printArray(input, 0, inputSize);
   printf("%f\n", timeTaken);
   return 0;
 }

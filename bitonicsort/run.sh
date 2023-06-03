@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Options for running files
-file_name="input_2_21.txt"
+file_name="input_2_16.txt"
 threads=4
 processes=4
 
@@ -11,8 +11,10 @@ make all
 echo "========================"
 echo "Results of Bitonic Sort Implementations"
 echo "========================"
-# only uncomment when using powers less than 20
-# python3 randomarrays.py
+# only uncomment when using <10
+python3 randomarrays.py
+> times.txt
+> speedup.txt
 echo "bitonic:"
 for i in {1..4} 
 do

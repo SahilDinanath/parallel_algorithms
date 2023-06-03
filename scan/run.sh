@@ -12,7 +12,8 @@ echo "========================"
 echo "Results of Scan Implementations"
 echo "========================"
 echo "scan:"
-
+> times.txt
+> speedup.txt
 # Run scan four times and append the last line of output to times.txt
 for i in {1..4}
 do
