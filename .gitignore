@@ -61,3 +61,8 @@ scan/scan_mpi
 scan/scan_omp
 sssp_dijkstra/sssp
 sssp_dijkstra/sssp_omp
+report/main.synctex.gz
+report/main.log
+report/main.fls
+report/main.fdb_latexmk
+report/main.aux
