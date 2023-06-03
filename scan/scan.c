@@ -89,9 +89,9 @@ void correctnessAssertion(long *input, long *original, long size) {
   serialPrefixSum(original, size);
   int result = compareArrays(input, original, size);
   if (result == 1) {
-    printf("Results are correct\n");
+    printf("Results are correct:\n");
   } else {
-    printf("Results are incorrect\n");
+    printf("Results are incorrect:\n");
   }
 }
 

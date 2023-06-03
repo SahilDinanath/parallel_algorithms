@@ -2,7 +2,7 @@
 
 # options for running files
 power_of_two=18
-threads=4
+threads=2
 processes=4
 
 make clean
