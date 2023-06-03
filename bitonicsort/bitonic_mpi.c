@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <mpi.h>
+#include <mpi/mpi.h>
 #include <omp.h>
 
 void compAndSwap(long *a, int i, int j, int dir)
@@ -29,15 +29,6 @@ void bitonicMerge(long *a, int low, int count, int dir)
   }
 }
 
-void evenOddSwap(long *a, int size)
-{
-  for (int i = 2; i < size; i += 2)
-  {
-    long temp = a[i];
-    a[i] = a[i - 1];
-    a[i -1] = temp;
-  }
-}
 
 void bitonicSort(long *a, int low, int count, int dir)
 {
@@ -58,6 +49,7 @@ void printArray(long input[], long startIndex, long endIndex)
   {
     printf("%ld ", input[i]);
   }
+  printf("\n");
 }
 
 void getFileSize(long *size, FILE *fileName)
@@ -76,6 +68,49 @@ void convertCharToIntArray(char *fileCharacters, long *input, long size)
   for (long i = 0; i < size; i++)
   {
     input[i] = fileCharacters[i] - '0';
+  }
+}
+
+int compareArrays(long *input, long *original, long size) {
+  for (int i = 0; i < size; i++) {
+    if (input[i] != original[i]) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
+void iterativeBitonicSort(long* a, int size) {
+  int i, j, k;
+
+  for (k = 2; k <= size; k = 2 * k) {
+    for (j = k >> 1; j > 0; j = j >> 1) {
+      for (i = 0; i < size; i++) {
+        int ij = i ^ j;
+        if (ij > i) {
+          if ((i & k) == 0 && a[i] > a[ij])
+            compAndSwap(a, i, ij, 1);
+          if ((i & k) != 0 && a[i] < a[ij])
+            compAndSwap(a, i, ij, 0);
+        }
+      }
+    }
+  }
+}
+
+void correctnessAssertion(long *input, long *original, long size) {
+  iterativeBitonicSort(original, size);
+  int result = compareArrays(input, original, size);
+  if (result == 1) {
+    printf("Results are correct\n");
+  } else {
+    printf("Results are incorrect\n");
+  }
+}
+
+void arrayCopy(long *source, long *destination, long size) {
+  for (long i = 0; i < size; i++) {
+    destination[i] = source[i];
   }
 }
 
@@ -99,12 +134,13 @@ int main(int argc, char **argv)
   // Calculate the chunk size for each process
   long chunk_size = inputArraySize / world_size;
 
-    char *inputFromFile = (char*)malloc(inputArraySize*sizeof(char));
+  char *inputFromFile = (char*)malloc(inputArraySize*sizeof(char));
 
   long *input = (long*)malloc(inputArraySize*sizeof(long));
-
+  long *original = (long *)malloc(inputArraySize * sizeof(long));
   readFile(inputFromFile, inputFileSize, file);
   convertCharToIntArray(inputFromFile, input, inputArraySize);
+  arrayCopy(input, original, inputArraySize);
 
   // Distribute the data among processes
   long* local_a = (long*)malloc(chunk_size * sizeof(long));
@@ -124,13 +160,12 @@ int main(int argc, char **argv)
   if (world_rank == 0)
   {
     // Perform the final bitonic merge on the gathered data
-    bitonicMerge(input, 0, inputArraySize, 1);
-    evenOddSwap(input, inputArraySize);
+    bitonicSort(input, 0, inputArraySize, 1);
     // stop timing code here
     double timeStop = omp_get_wtime();
     double timeTaken = timeStop - timeStart;
-    printArray(input, 0, inputArraySize);
-    printf("\n");
+    correctnessAssertion(input, original, inputArraySize);
+    // printArray(input, 0, inputArraySize);
     // print out time taken
     printf("%f",timeTaken);
     printf("\n");
