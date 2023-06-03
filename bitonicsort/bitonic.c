@@ -63,7 +63,7 @@ int compareArrays(long *input, long *original, long size) {
   return 1;
 }
 
-void iterativeBitonicSort(long* a, int size) {
+void iterativeBitonicSort(long* a, long size) {
   int i, j, k;
 
   for (k = 2; k <= size; k = 2 * k) {
