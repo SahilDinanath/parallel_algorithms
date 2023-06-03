@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file_name="graph_6.txt"
+file_name=graph_6.txt
 threads=2
 
 make clean
@@ -17,6 +17,7 @@ echo "========================"
 echo "sssp:"
 ./sssp ${file_name}
 
+mpirun -np 2 ./sssp_mpi ${file_name} | tail -n 1 >> times.txt
 # Execute SSSP four times and pipe the last line of output to times.txt
 for i in {1..4}
 do
@@ -28,3 +29,6 @@ python3 average.py
 # cat times.txt
 > times.txt
 rm "$file_name"
+
+# sssp_omp
+echo "sssp_omp:"
