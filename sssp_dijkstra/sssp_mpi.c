@@ -111,7 +111,7 @@ Vertex* dijkstra(int rank, int size, int *graph, int n, int source) {
   // printShortestPaths(vertices, n, source);
   // printf("%lf", timeTaken);
   // printf("\n");
-  return vertices;
+  return allVertices;
 }
 int compareArrays(Vertex *inputVertices, Vertex *originalVertices, int size) {
   for (int i = 0; i < size; i++) {
@@ -231,6 +231,7 @@ int main(int argc, char *argv[]) {
       }
     }
   }
+
   int timeStart = MPI_Wtime();
   MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Barrier(MPI_COMM_WORLD);
@@ -241,7 +242,7 @@ int main(int argc, char *argv[]) {
   //  int source;
   //  printf("Enter the source vertex: ");
   //  scanf("%d", &source);
-  Vertex *input = dijkstra(rank, numOfProcesses, local_graph, n - 1, 0);
+  Vertex *input = dijkstra(rank, numOfProcesses, local_graph, n, 0);
 
   double timeEnd = MPI_Wtime();
   double timeTaken = timeEnd - timeStart;
