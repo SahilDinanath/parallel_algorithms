@@ -17,7 +17,6 @@
 	\item  Given a set of elements, $[a_0,a_1,\dotsm,a_{n-1}]$, the scan operation associated with addition operator for this input is the output set $[a_0,(a_0+a_1),\dotsm,(a_0+a_1+\dotsm+a_{n-1})]$. 
 	\item For example, the input set is $[2,1,4,0,3,7,6,3]$, then the scan with addition operator of this input is $[2,3,7,7,10,17,23,26]$. 
 \end{itemize}
-\subsection*{Approach}
 \subsection{Serial} 
 \subsection*{strategy:}
 The approach that was chosen to represent the serial implementation of the prefix scan algorithm was the serial workefficient implementation of blelloch's algorithm which is shown in Listing \ref{lst:scan_serial_blelloch}. 
@@ -76,8 +75,14 @@ applyOffset(inputArray, startIndex, endIndex, processSum,rank){
 		inputArray[i] += sum
 \end{lstlisting}
 \subsection{MPI}
-\subsection{Testing Methods}
-
+\subsection*{Parallization Strategy:}
+All the parallisation stragegies that were used in the OMP algorithm was used for MPI with the differences being process wise, but the general concept being the same. Some of the differences include: 
+\begin{enumerate}
+	\item instead of a shared input array, each MPI process has their own copy.
+	\item Using ranks each process works on their chunk of the array independantly although they have the entire array.
+	\item Finally using ${MPI\_Gather}$ function, the chunks that they worked on are gathered into an array on the process with rank 0. 
+\end{enumerate}
+Although this method does require more memory it allows us to remove the Multiple broadcasts, as each process would need to communicate it's process sum to each node.  
 \subsection{Correctness}
 The correctness of all prefix sum algorithm above was determined by a simple sequential serial algorithm for computing scan operations shown in Listing \ref{lst:scan_correctness}
 \begin{lstlisting}[language=C, caption={Serial Sequenctial Scan Algorithm with + operator}, label={lst:scan_correctness}]
@@ -237,10 +242,15 @@ The Bitonic Sort algorithm is then applied to the input array using the \texttt{
 \subsection{MPI}
 \pagebreak
 \section{Problem 3: Parallel Graph Algorithm}
-\subsection*{Approach}
 \subsection{Serial}
+\subsection*{Strategy}
+The algorithm that was chosen was Dijkstra's Single Source Shortest Path algorithm with a standard implementation.
 \subsection{OpenMP}
+\subsection*{Parallization Strategy}
+the first strategy that was used to parallize Dijkstra's algorithm was by allowing each processor to visit adjacent nodes concurrently. This proved to be effective when graphs had many adjacencies however the amount of cores utilised were dependant on how many adjacencies the node had.\\\\
+
 \subsection{MPI}
+The MPI implementation follows the same paralization strategy as the OMP version. With the key difference being that the OMP implemention being that we take the 2d input graph and flatten it into a 1d array. This allows us to scatter the graph input graph to each process and then each perform their computation seperatly on their section of the graph. The results are then collected on the first node. 
 An example figure is given in Figure~\ref{fig:sp_fig1}.
 \begin{figure}[htb]
 	\centering
@@ -262,6 +272,11 @@ An example of table is given Table~\ref{tab:example}.
 		\bottomrule
 	\end{tabular}
 \end{table} 
-
+\subsection{Correctness}
+To test the correctness of the algorithms we verfied that our sequential algorithm was correct by having it read in a known graph and comparing the end result with it's output. After we verified our sequential algorithm was correct, we then made two copies of the array, input and original. We then had each algorithm perform their method of computation on each array. Each element was then compared sequentially with eachother to ensure correctness.
+\subsection{testing}
+Testing for this these algorithms were done using a bash script. The graph and the number of threads/processes were passed in as parameters into the executable. We ran each computation multiples times, wrote the results to a file and then computed the average speed up compared to the sequential algorithm and time.
+The tests were done on laptops and on servers.
+\subsection{performance evaluation}
 \end{document} 
 
