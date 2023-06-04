@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Options for running files
-power_of_two=28
-threads=8
+power_of_two=29
+threads=2
 processes=2
 
 make clean
