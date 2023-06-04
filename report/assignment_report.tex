@@ -74,7 +74,6 @@ applyOffset(inputArray, startIndex, endIndex, processSum,rank){
 		
 	for i = startIndex to endIndex by i+1
 		inputArray[i] += sum
-		
 \end{lstlisting}
 \subsection{MPI}
 \subsection{Testing Methods}
@@ -107,16 +106,50 @@ The Bash script also allows us to run each algorithm with identical inputs to se
 	\caption{Blelloch's prefix scan with different input sizes using 2 cores}\label{tab:example}
 	\begin{tabular}{l|ccccc}
 		\toprule
-		No of elements& $2^3$ & $2^{18}$ & $2^{26}$ & $2^{29}$ & $2^{30}$\\
+		No of elements& $2^3$ & $2^{18}$  & $2^{26}$ & $2^{28}$\\
 		\midrule
-		Serial &0.000002	&0.004051&0.3&0.4&0.5\\
-		OMP &0.000032		&0.003475&&\\
-		Speedup &0.063492	&1.165588&4&5&6\\
-		MPI &0.000020		&0.003168&&\\
-		Speedup &0.099999	&1.278422&4&5&6\\
+		Serial &0.000002	&0.004051&0.728403&2.896867\\
+		OMP &0.000032		&0.003475&0.563001&2.242173 \\
+		Speedup &0.063492	&1.165588&1.293789&1.291991\\
+		MPI &0.000020		&0.003168&0.559897&2.241902\\
+		Speedup &0.099999	&1.278422&1.300958&1.292147\\
 		\bottomrule
 	\end{tabular}
 \end{table}
+As seen above the average speed up given a problem size of decent size is 1.25x for OMP and 1.324x for MPI using 2 cores. 
+\begin{table}[htb]
+	\centering
+	\caption{Blelloch's prefix scan with different input sizes using 4 cores}\label{tab:example}
+	\begin{tabular}{l|ccccc}
+		\toprule
+		No of elements& $2^3$ & $2^{18}$  & $2^{26}$ & $2^{28}$\\
+		\midrule
+		Serial 	&0.000002 	&0.001549&0.719261&3.0204775\\
+		OMP 	&0.000064	&1.001434&0.371427&1.4844075\\
+		Speedup &0.035294	&1.079658&1.936479&2.0348034\\
+		MPI 	&0.000062	&0.001851&0.707955&3.755351\\
+		Speedup &0.036144	&0.836462&1.015970&0.804313\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+As can be seen above the performance with OMP using more cores can be seen to gain a considerable speed up over it's other linear counter part by 2x. Due to the implementation of MPI we can see the performance decrease due to the lack of memory availiable to the system as MPI the implementation creates n copies of the input array (n being the amount of processors). 
+\pagebreak
+\begin{table}[htb]
+	\centering
+	\caption{Blelloch's prefix scan with different input sizes using 8 cores}
+	\begin{tabular}{l|ccccc}
+		\toprule
+		No of elements& $2^3$ & $2^{18}$  & $2^{26}$ & $2^{28}$\\
+		\midrule
+		Serial 	&0.000001 	&0.001538&0.734418&2.9164853\\
+		OMP 	&0.000164	&0.000825&0.367877&1.4725225\\
+		Speedup &0.009146	&1.873364&1.996371&1.9806049\\
+		MPI 	&0.009259	&0.000441&0.353135&4.1406010\\
+		Speedup &0.036144	&3.492622&2.079710&0.7043629\\
+		\bottomrule
+	\end{tabular}
+\end{table}\\
+Although OMP can be seen to not have a large benefit on this problem size on 8 cores, with it performing on par or slightly better then then it's 4 core counterpart. The MPI version can be seen to have a huge increase in performance on the ${2^{26}}$ and ${2^{28}}$ problem sizes. This improvement is due to the increase in cores since 8 cores allows the MPI to overcome the slow down due to the additional computation, and also the problem size fitting more comfortably in memory and cache.  
 \pagebreak
 \section{Problem 2: Parallel Bitonic Sort}
 \subsection*{Approach}
