@@ -49,7 +49,7 @@ void printShortestPaths(Vertex vertices[], int n, int source) {
         free(path); // Free the dynamically allocated memory
     }
 }
-
+ 
 void dijkstra(int** graph, int n, int source) {
     double timeStart = omp_get_wtime();
     Vertex* vertices = (Vertex*)malloc(n * sizeof(Vertex));

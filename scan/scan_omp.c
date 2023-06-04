@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 void printArray(long input[], long startIndex, long endIndex) {
   for (long i = startIndex; i < endIndex; i++) {
     printf("%ld ", input[i]);
@@ -27,47 +26,35 @@ void upSweep(long input[], long chunkSize, long startIndex, long endIndex) {
   for (long i = 0; i < treeDepth; i++) {
     previousIncrement = pow(2, i);
     increment = pow(2, i + 1);
-#pragma omp parallel shared(increment, previousIncrement) private(previous,    \
-                                                                      next)
-    {
-#pragma omp for
-      for (long j = startIndex; j < endIndex; j += increment) {
-        previous = j + previousIncrement - 1;
-        next = j + increment - 1;
-        input[next] = input[previous] + input[next];
-      }
+    for (long j = startIndex; j < endIndex; j += increment) {
+      previous = j + previousIncrement - 1;
+      next = j + increment - 1;
+      input[next] = input[previous] + input[next];
     }
   }
 }
 
-void downSweep(long input[], long chunkSize,long startIndex,long endIndex) {
+void downSweep(long input[], long chunkSize, long startIndex, long endIndex) {
   long previous, next, temp;
-  input[endIndex- 1] = 0;
+  input[endIndex - 1] = 0;
   long treeDepth = ceil(log2(chunkSize));
   int increment = 0;
   int previousIncrement = 0;
   for (long i = treeDepth - 1; i >= 0; i--) {
     previousIncrement = pow(2, i);
     increment = pow(2, i + 1);
-#pragma omp parallel shared(increment, previousIncrement) private(             \
-        previous, next, temp)
-    {
-#pragma omp for
-      for (long j = startIndex; j < endIndex; j += increment) {
-        previous = j + previousIncrement - 1;
-        next = j + increment - 1;
-        temp = input[previous];
-        input[previous] = input[next];
-        input[next] = temp + input[next];
-      }
+    for (long j = startIndex; j < endIndex; j += increment) {
+      previous = j + previousIncrement - 1;
+      next = j + increment - 1;
+      temp = input[previous];
+      input[previous] = input[next];
+      input[next] = temp + input[next];
     }
   }
 }
 
-
 void shiftArrayToLeft(long *input, long startIndex, long endIndex) {
   startIndex++;
-  #pragma omp parallel for shared(startIndex,endIndex)
   for (long i = startIndex; i < endIndex; i++) {
     input[i - 1] = input[i];
   }
@@ -76,7 +63,6 @@ void getLastElementPrefixSum(long *input, long endIndex,
                              long initalLastElement) {
   input[endIndex - 1] += initalLastElement;
 }
-
 
 long getStartIndex(int rank, long size, int numOfProcesses) {
   return floor((rank * size) / (float)numOfProcesses);
@@ -96,8 +82,7 @@ void getProcessSum(long input[], long size, long *processSum, long chunkSize,
   }
   int start = (rank - 1) * chunkSize;
   int end = rank * chunkSize;
-  
-  #pragma omp parallel for shared(start,end)
+
   for (int i = start; i < end; i++) {
     *processSum += input[i];
   }
@@ -108,7 +93,6 @@ void applyOffset(long input[], long startIndex, long endIndex, long *processSum,
   for (int j = 0; j < rank + 1; j++) {
     sum += processSum[j];
   }
-  #pragma omp parallel for shared(startIndex,endIndex)
   for (int i = startIndex; i < endIndex; i++) {
     input[i] += sum;
   }
@@ -127,13 +111,13 @@ void prefixSum(long *input, long size, int threads) {
     long endValue = input[endIndex - 1];
     long processSum = 0;
     getProcessSum(input, size, &processSum, chunkSize, rank);
-    processSumArray[rank] = processSum;  
-    #pragma omp barrier
-    upSweep(input, chunkSize,startIndex,endIndex);
-    downSweep(input, chunkSize,startIndex,endIndex);
-    shiftArrayToLeft(input,startIndex,endIndex);
-    getLastElementPrefixSum(input,endIndex, endValue);
-    applyOffset(input,startIndex,endIndex,processSumArray,rank);
+    processSumArray[rank] = processSum;
+#pragma omp barrier
+    upSweep(input, chunkSize, startIndex, endIndex);
+    downSweep(input, chunkSize, startIndex, endIndex);
+    shiftArrayToLeft(input, startIndex, endIndex);
+    getLastElementPrefixSum(input, endIndex, endValue);
+    applyOffset(input, startIndex, endIndex, processSumArray, rank);
   }
 }
 

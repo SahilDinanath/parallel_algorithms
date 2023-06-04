@@ -1,5 +1,5 @@
 CC=mpicc
-CFLAGS= -g -Wall
+CFLAGS= 
 LDLIBS = -lm
 
 SRCS = scan.c scan_omp.c

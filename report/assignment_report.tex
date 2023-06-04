@@ -104,14 +104,16 @@ The Bash script also allows us to run each algorithm with identical inputs to se
 \subsection{performance evaluation}
 \begin{table}[htb]
 	\centering
-	\caption{Blelloch's prefix scan with different input sizes}\label{tab:example}
+	\caption{Blelloch's prefix scan with different input sizes using 2 cores}\label{tab:example}
 	\begin{tabular}{l|ccccc}
 		\toprule
 		No of elements& $2^3$ & $2^{18}$ & $2^{26}$ & $2^{29}$ & $2^{30}$\\
 		\midrule
-		Serial &0.1&0.2&0.3&0.4&0.5\\
-		Parallel &&&&\\
-		Speedup &2&3&4&5&6\\
+		Serial &0.000002	&0.004051&0.3&0.4&0.5\\
+		OMP &0.000032		&0.003475&&\\
+		Speedup &0.063492	&1.165588&4&5&6\\
+		MPI &0.000020		&0.003168&&\\
+		Speedup &0.099999	&1.278422&4&5&6\\
 		\bottomrule
 	\end{tabular}
 \end{table}
