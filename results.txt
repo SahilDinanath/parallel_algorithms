@@ -1,0 +1,32 @@
+bitonic:
+Results are correct
+0.000001
+Results are correct
+0.000001
+Results are correct
+0.000001
+Results are correct
+0.000001
+Average execution time: 0.0000010000
+
+bitonic_omp:
+Results are correct
+0.000002
+Results are correct
+0.000002
+Results are correct
+0.000002
+Results are correct
+0.000002
+Average execution time: 0.0000020000
+
+bitonic_mpi:
+Results are correct
+0.000033
+Results are correct
+0.000140
+Results are correct
+0.000018
+Results are correct
+0.000106
+Average execution time: 0.0000742500
