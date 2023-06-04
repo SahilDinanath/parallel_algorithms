@@ -20,11 +20,12 @@ To execute with different input sizes do the following:
 1. Edit `bitonicsort/randomarrays.py` and change `<input_size>` in the following two lines
 ```py
 file = open("input_2_<input_size>.txt","w")
-for i in range(2**<inputsize>):
+n = 2 ** 26  # Size of the bitonic sequence
 ```
 2. Edit `bitonicsort/run.sh` 
 ```bash
 file_name="input_2_<input_size>.txt"
+power_of_two=<input_size>
 ```
 3. Run `randomarrays.py` beforehand if the `<input_size>` is less than 18
 ### Dijkstra SSSP
