@@ -21,9 +21,9 @@ with open('results.txt', 'r') as file:
 mode = 'serial'  # Set default mode to 'serial'
 for i in range(len(lines)):
     line = lines[i].strip()
-    if 'bitonic_omp' in line:
+    if 'omp' in line:
         mode = 'omp'
-    elif 'bitonic_mpi' in line:
+    elif 'mpi' in line:
         mode = 'mpi'
     elif line.startswith('Average execution time:'):
         average_time = float(line.split(':')[1].strip())
