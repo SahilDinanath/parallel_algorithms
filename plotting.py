@@ -44,3 +44,29 @@ plt.xticks(index + bar_width, ['1', '2', '3', '4', 'Avg'])
 plt.legend()
 
 plt.show()
+
+# Average serial execution time and speedup values
+serial_avg_time = 0.14608275
+omp_speedup = 0.5429162617232287
+mpi_speedup = 0.9898647160663647
+
+# Create bar graph
+x = ['OMP', 'MPI']
+y = [omp_speedup, mpi_speedup]
+
+plt.bar(x, y)
+
+# Set labels and title
+plt.xlabel('Implementations')
+plt.ylabel('Speedup')
+plt.title('Average Speedups')
+plt.axhline(y=1, color='r', linestyle='--', label='Baseline')
+
+# Annotate the serial execution time
+plt.annotate('Serial: {:.6f}'.format(serial_avg_time), xy=(0, 1), xytext=(0, 0.05),
+             ha='center', va='bottom')
+
+# Display the legend
+plt.legend()
+
+plt.show()
