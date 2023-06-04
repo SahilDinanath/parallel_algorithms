@@ -28,7 +28,6 @@ upsweep(inputArray,n):
     	for k = 0 to n - 1 by 2^(d+1) do
         	inputArray[k + 2^(d+1) - 1] += inputArray[k + 2^d - 1]
 
-
 downsweep(inputArray,n):
 	input[n-1] = 0
 	for d = log2(n) - 1 down to 0 do 
@@ -38,7 +37,7 @@ downsweep(inputArray,n):
 			inputArray[k + 2^(d+1) - 1] += temp
 
 \end{lstlisting}
-The idea as stated in \href{https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda}{Parallel Prefix Sum with Cuda} is to build a balanced binary tree with n leaves and log2(n) levels
+The idea as stated in \href{https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda}{Parallel Prefix Sum with Cuda} is to build a balanced binary tree with n leaves and log2(n) levels called depths.
 
 \subsection*{pseudocode:} 
 \subsection{OpenMP}
@@ -81,16 +80,41 @@ applyOffset(inputArray, startIndex, endIndex, processSum,rank){
 \subsection{Testing Methods}
 
 \subsection{Correctness}
-\subsection{performance evaluation}
-The correctness of the algorithm was determined by a simple sequential serial algorithm for computing scan operations shown in Listing \ref{lst:scan_correctness}
+The correctness of all prefix sum algorithm above was determined by a simple sequential serial algorithm for computing scan operations shown in Listing \ref{lst:scan_correctness}
 \begin{lstlisting}[language=C, caption={Serial Sequenctial Scan Algorithm with + operator}, label={lst:scan_correctness}]
-void prefixSum(long *input, long size) { 
-	for (long i = 1; i < size; i++) {
-		input[i] += input[i - 1]; 
-	} 
-}
+prefixSum(inputArray, size) 
+	for i = 1 to size-1 by i+1 
+		input[i] += input[i - 1] 
+	 
 \end{lstlisting}
-This was done to guarentee correctness on all implementations of the blelloch's algorithm.
+The above algorithm is easily testable itself, simple enough implementation to ensure algorithmic correctness, and correct in all problem sizes with testing speeds being acceptable. 
+\\the steps that were taken to implement this were:
+\begin{enumerate}
+	\item Create two arrays, let us call one the original array and the other the input array. The original array will contain the original set of elements and the input array will be modified using the above algorithms. 
+	\item When reading/generating elements assign them both to each array. So that both arrays are identical.
+	\item perform the serial/parallel algorithm that are to be tested on the input array. This will modify the array and result in a final answer.
+	\item When this is done perform the serial sequential scan algorithm above on the original array.
+	\item Each element of each array is then compaired to see if they match.
+	
+\end{enumerate}
+Correctness of the testing algorithm was also ensured by reading in determinate data from files which solution is known, then comparing the output to what was expected. This ensures the correctness check is correct, which ensures that the other algorithms would be correct.
+\subsection{Testing}
+Each algorithm including the correctness were tested in two different ways. First method was determinate by reading unchanging data from files. The second was generating random numbers. The second approach allowed us to scale the testing input to significant sizes. A bash script was used allow the efficient testing of the algorithms which were designed to take variables such as threads and problem sizes as parameters. Variables could be used to change the arguments passed as parameters. The compiled algorithms would be run multiple times using a for loop in the bash script. The output for the time taken to complete a run were written to a text file where a python file performed calculations of the averages of the runs. 
+The Bash script also allows us to run each algorithm with identical inputs to see the performance differences accurately.
+\subsection{performance evaluation}
+\begin{table}[htb]
+	\centering
+	\caption{Blelloch's prefix scan with different input sizes}\label{tab:example}
+	\begin{tabular}{l|ccccc}
+		\toprule
+		No of elements& $2^3$ & $2^{18}$ & $2^{26}$ & $2^{29}$ & $2^{30}$\\
+		\midrule
+		Serial &0.1&0.2&0.3&0.4&0.5\\
+		Parallel &&&&\\
+		Speedup &2&3&4&5&6\\
+		\bottomrule
+	\end{tabular}
+\end{table}
 \pagebreak
 \section{Problem 2: Parallel Bitonic Sort}
 \subsection*{Approach}
