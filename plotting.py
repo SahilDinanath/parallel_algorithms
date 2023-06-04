@@ -45,6 +45,7 @@ plt.legend()
 
 plt.show()
 
+# Section for graphing "speedups" (more like speeddowns, it is unequivocally over)
 # Average serial execution time and speedup values
 serial_avg_time = 0.14608275
 omp_speedup = 0.5429162617232287
