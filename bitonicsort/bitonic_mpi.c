@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <mpi/mpi.h>
+#include <mpi.h>
 #include <omp.h>
+#include <math.h>
 
 void compAndSwap(long *a, int i, int j, int dir)
 {
@@ -29,6 +30,15 @@ void bitonicMerge(long *a, int low, int count, int dir)
   }
 }
 
+void evenOddSwap(long *a, int size)
+{
+  for (int i = 2; i < size; i += 2)
+  {
+    long temp = a[i];
+    a[i] = a[i - 1];
+    a[i -1] = temp;
+  }
+}
 
 void bitonicSort(long *a, int low, int count, int dir)
 {
@@ -49,7 +59,6 @@ void printArray(long input[], long startIndex, long endIndex)
   {
     printf("%ld ", input[i]);
   }
-  printf("\n");
 }
 
 void getFileSize(long *size, FILE *fileName)
@@ -78,6 +87,92 @@ int compareArrays(long *input, long *original, long size) {
     }
   }
   return 1;
+}
+void swapUp(long idx1, long idx2, long *input)
+{
+    if (input[idx2] < input[idx1])
+    {
+        long temp = input[idx2];
+        input[idx2] = input[idx1];
+        input[idx1] = temp;
+    }
+}
+
+void downSwap(long idx1, long idx2, long *input)
+{
+    if (input[idx1] < input[idx2])
+    {
+        long temp = input[idx2];
+        input[idx2] = input[idx1];
+        input[idx1] = temp;
+    }
+}
+
+void bitonicSortFromBitonicSequence(long startIndex, long lastIndex, int dir, long *input)
+{
+    if (dir == 1)
+    {
+        int counter = 0;
+        long noOfElements = lastIndex - startIndex + 1;
+        for (long j = noOfElements / 2; j > 0; j = j / 2)
+        {
+            counter = 0;
+            for (long i = startIndex; i + j <= lastIndex; i++)
+            {
+                if (counter < j)
+                {
+                    swapUp(i, i + j, input);
+                    counter++;
+                }
+                else
+                {
+                    counter = 0;
+                    i = i + j - 1;
+                }
+            }
+        }
+    }
+    else
+    {
+        int counter = 0;
+        long noOfElements = lastIndex - startIndex + 1;
+        for (long j = noOfElements / 2; j > 0; j = j / 2)
+        {
+            counter = 0;
+            for (long i = startIndex; i <= (lastIndex - j); i++)
+            {
+                if (counter < j)
+                {
+                    downSwap(i, i + j, input);
+                    counter++;
+                }
+                else
+                {
+                    counter = 0;
+                    i = i + j - 1;
+                }
+            }
+        }
+    }
+}
+void genBitonic(long startIndex, long lastIndex, long *input)
+{
+    long noOfElements = lastIndex - startIndex + 1;
+    for (long j = 2; j <= noOfElements; j = j * 2)
+    {
+        // #pragma omp parallel for
+        for (long i = 0; i < noOfElements; i = i + j)
+        {
+            if (((i / j) % 2) == 0)
+            {
+                bitonicSortFromBitonicSequence(i, i + j - 1, 1, input);
+            }
+            else
+            {
+                bitonicSortFromBitonicSequence(i, i + j - 1, 0, input);
+            }
+        }
+    }
 }
 
 void iterativeBitonicSort(long* a, long size) {
@@ -123,23 +218,24 @@ int main(int argc, char **argv)
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
   // reads in arguments, initializes variables, sets up necessary details for the rest of the program
-  char *inputFile = argv[1];
-  long inputFileSize;
-  long inputArraySize;
-  FILE *file = fopen(inputFile, "rb");
-  getFileSize(&inputFileSize, file);
-  inputFileSize++;
-  inputArraySize = inputFileSize - 1;
+  long inputArraySize = pow(2, atol(argv[1]));
+  // char *inputFile = argv[1];
+  // long inputFileSize;
+  // long inputArraySize;
+  // FILE *file = fopen(inputFile, "rb");
+  // getFileSize(&inputFileSize, file);
+  // inputFileSize++;
+  // inputArraySize = inputFileSize - 1;
 
   // Calculate the chunk size for each process
   long chunk_size = inputArraySize / world_size;
 
-  char *inputFromFile = (char*)malloc(inputArraySize*sizeof(char));
+  // char *inputFromFile = (char*)malloc(inputArraySize*sizeof(char));
 
   long *input = (long*)malloc(inputArraySize*sizeof(long));
   long *original = (long *)malloc(inputArraySize * sizeof(long));
-  readFile(inputFromFile, inputFileSize, file);
-  convertCharToIntArray(inputFromFile, input, inputArraySize);
+  // readFile(inputFromFile, inputFileSize, file);
+  // convertCharToIntArray(inputFromFile, input, inputArraySize);
   arrayCopy(input, original, inputArraySize);
 
   // Distribute the data among processes
@@ -152,15 +248,15 @@ int main(int argc, char **argv)
   double timeStart = omp_get_wtime();
 
   // Perform bitonic sort on the local data
-  bitonicSort(local_a, 0, chunk_size, 1);
-
+  // bitonicSort(local_a, 0, chunk_size, 1);
+  genBitonic(0, inputArraySize - 1, input);
   // Gather the sorted data from all processes
   MPI_Gather(local_a, chunk_size, MPI_LONG, input, chunk_size, MPI_LONG, 0, MPI_COMM_WORLD);
 
   if (world_rank == 0)
   {
     // Perform the final bitonic merge on the gathered data
-    bitonicSort(input, 0, inputArraySize, 1);
+    // bitonicSort(input, 0, inputArraySize, 1);
     // stop timing code here
     double timeStop = omp_get_wtime();
     double timeTaken = timeStop - timeStart;
@@ -170,9 +266,12 @@ int main(int argc, char **argv)
     printf("%f",timeTaken);
     printf("\n");
   }
+  // print out time taken
+  //   printf("%f",timeTaken);
+
   // Free allocated memory
   free(local_a);
-  free(inputFromFile);
+  // free(inputFromFile);
   free(input);
 
   MPI_Finalize();
