@@ -1,8 +1,8 @@
 #!/bin/bash
-
+#correctness assertion for serial can be tested with graph_0.txt
 file_name="graph_0.txt"
 threads=8
-processes=1
+processes=8
 
 make clean
 make all
