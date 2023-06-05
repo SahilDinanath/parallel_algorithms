@@ -7,7 +7,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[R]{\thepage}
-\fancyhead[L]{COMS3008A Assinment}
+\fancyhead[L]{COMS3008A Assignment}
 %\vskip 3mm 
 %\pagenumbering{roman}
 %\newpage
@@ -34,21 +34,21 @@ downsweep(inputArray,n):
 \end{lstlisting}
 The idea as stated in \href{https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda}{Parallel Prefix Sum with Cuda} is to build a balanced binary tree with n leaves and log2(n) levels called depths.
 \subsection{OpenMP}
-\subsection*{parallization method:}
+\subsection*{Parallelisation method:}
 The serial implementation of blelloch's algorithm was used as the base for the OMP parallel implementation, with largely the core algorithm staying the same. However, the differences being with how the algorithm processed a single array. The first most obvious parallisation method is to parallise the inner for loops in both the upsweep and downsweep of the algorithm, see Listing \ref{lst:scan_parallisation_inner_loop} 
 \begin{lstlisting}[language=C, caption={parallisation of the inner loop}, label={lst:scan_parallisation_inner_loop}]
 ...
 		for k = 0 to n - 1 by 2^(d+1) in parallel do
 ...
 \end{lstlisting}
-this allows for the summations at each depth to be parallized. The issue with this method is that at each level the amount of elements that needs to be computed is halved, hence the algorithm becomes more serial as it progresses as there is less elements to split between the cores for both the up and down sweep.\\\\ The second parallization strategy was to take the input array, break it up into chunks and have each processor perform it's own up and down sweep on it's section of the array. This would expose more concurrency as at each depth all the processors can be acting on their chunk of the array, in contrast to the original method where at the highest depth only 1 processor will be able to act.\\This was achieved using a processor sum, which is the summation of each chunk given to each processor. Each processor then perform the up and down sweep on their respective chunk. Finally each processor adds their processor sum to each element of their array. 
+this allows for the summations at each depth to be parallized. The issue with this method is that at each level the amount of elements that needs to be computed is halved, hence the algorithm becomes more serial as it progresses as there is less elements to split between the cores for both the up and down sweep.\\\\ The second Parallelisation strategy was to take the input array, break it up into chunks and have each processor perform it's own up and down sweep on it's section of the array. This would expose more concurrency as at each depth all the processors can be acting on their chunk of the array, in contrast to the original method where at the highest depth only 1 processor will be able to act.\\This was achieved using a processor sum, which is the summation of each chunk given to each processor. Each processor then perform the up and down sweep on their respective chunk. Finally each processor adds their processor sum to each element of their array. 
 eg: $[a_0,(a_0+a_1),(a_0+a_1+a_3),(a_0+a_1+a_3+a_4)]$\\
 \\ assume 2 processors hence 2 chunks:\\
 $[a_0,(a_0+a_1),(a_0+a_1+a_3)]$,\\$[(a_0+a_1+a_3+a_4),\dots]$\\
 \\let $processorSum_0 = a_0+a_1+a_3$ therefore\\
 $[(processorSum_0+a_4),(processorSum_0 + a_4 +a_5),\dots] $\\\\hence for each$ [(a_4),(a_4 +a_5),\dots]$ add $processorSum_0$\\
-as you can see now each chunk is independant of eachother meaning we can now perform the up and down sweep independantly and concurrently on each processor. See Listing \ref{lst:scan_second_parallization_method} 
-\begin{lstlisting}[language=C, caption={Serial Sequenctial Scan Algorithm with + operator}, label={lst:scan_second_parallization_method}]
+as you can see now each chunk is independant of eachother meaning we can now perform the up and down sweep independantly and concurrently on each processor. See Listing \ref{lst:scan_second_Parallelisation_method} 
+\begin{lstlisting}[language=C, caption={Serial Sequenctial Scan Algorithm with + operator}, label={lst:scan_second_Parallelisation_method}]
 getProcessSum(inputArray, size, processSum, chunkSize,rank){ 
 	if (rank == 0):  
 		processSum = 0 
@@ -59,7 +59,7 @@ getProcessSum(inputArray, size, processSum, chunkSize,rank){
 		processSum += input[i];
 \end{lstlisting}
 \subsection{MPI}
-\subsection*{Parallization Strategy:}
+\subsection*{Parallelisation Strategy:}
 All the parallisation stragegies that were used in the OMP algorithm was used for MPI with the differences being process wise, but the general concept being the same. Some of the differences include: 
 \begin{enumerate}
 	\item instead of a shared input array, each MPI process has their own copy.
@@ -171,21 +171,23 @@ To test the correctness of the sorting algorithm, we perform the following steps
 \begin{enumerate}
   \item Read in random input and store it in an array.
   \item Create a copy of the input array using the \texttt{arrayCopy} function.
-  \item Call the \texttt{iterativeBitonicSort} function to sort the copied array.
+  \item Call the \texttt{imperativeBitonicSort} function to sort the copied array.
   \item Compare the sorted array with the original input array using the \texttt{compareArrays} function.
   \item If the result is \texttt{1}, the arrays are identical, and the sorting algorithm is correct. Otherwise, if the result is \texttt{0}, the arrays differ, indicating an error in the sorting process.
 \end{enumerate}
 
-\subsubsection*{Example 1}
+\subsubsection*{Example 1 with $2^8$}
 
-Input array: [5, 3, 1, 4, 2]
+Input array: [4 5 6 7 3 2 1 0]
 
-Sorted array: [1, 2, 3, 4, 5]
+Sorted array: [0 1 2 3 4 5 6 7]
+
+Correctness assertion: [0 1 2 3 4 5 6 7]
 
 Result: Correct
 \subsection*{Testing}
 
-The code begins by reading the input file and converting the characters to integers. This section of the code consists of the following functions:
+The code begins by reading the input file and converting the characters to integers. 
 
 \begin{itemize}
   \item \texttt{getFileSize}: This function determines the size of the input file by seeking to the end of the file, retrieving the current position (which represents the file size), and then resetting the file position to the beginning.
@@ -193,46 +195,115 @@ The code begins by reading the input file and converting the characters to integ
   \item \texttt{convertCharToIntArray}: This function converts the character array \texttt{fileCharacters} into an array of long integers \texttt{input} by subtracting the ASCII value of \texttt{'0'} from each character.
 \end{itemize}
 
-\subsection*{Results}
 
-After testing the sorting algorithm on various input arrays, we found that...
+\subsection{OpenMP}
+\subsubsection*{Parallelisation} 
+My approach with parallelization was to strike a balance between workload distribution, task creation overhead, and task synchronization 
+given that this was initially a recursive implementation.
+\begin{enumerate}
+	\item Task Granularity: The granularity of tasks in the code may not be optimal. Creating tasks for each recursive call (`bitonicSort` and `bitonicMerge`) can result in a large number of small tasks, which may introduce overhead due to task creation and management. It is generally recommended to balance the workload of tasks and minimize task creation overhead.
+	\item Workload Imbalance: The workload distribution among tasks may not be even. In the `bitonicSort` function, the division of the array into two parts (`k` and `count - k`) may not always result in equal-sized subarrays. This can lead to workload imbalance among tasks and underutilization of available threads.
+	\item Task Synchronization: I had considered using \texttt{\#pragma omp taskwait} to synchronize tasks. While this ensures that all tasks complete before proceeding, it introduces synchronization overhead. 
+\end{enumerate}
+My approach therfore had to change to an iterative bitonic sort due to the large overheads impose
+by a recursive sort.
+\begin{itemize}
+	\item I firstly use \texttt{genBitonic} to determine within the parallel loop whether the range increasing or decreasing using \texttt{((i / j) \% 2) == 0}
+	\item \texttt{dir = 1} is increasing, \texttt{dir = 0} is decreasing
+	\item it then calls \texttt{iterativeBitonicSort} with the respective direction
+	\item \texttt{\#pragma omp parallel for} is then used to parallelize the for loop
+\end{itemize}
+\begin{verbatim}
+	function genBitonic(startIndex, lastIndex, input)
+    size <- lastIndex - startIndex + 1
+    for j = 2 to size step j = j * 2
+        parallel for i = 0 to size step i = i + j
+            if (i / j) % 2 == 0 then
+                iterativeBitonicSort(i, i + j - 1, 1, input)
+            else
+                iterativeBitonicSort(i, i + j - 1, 0, input)
+            end if
+        end parallel for
+    end for
+end function
 
-
-\subsection*{Conclusion}
-
-Based on the results of the correctness testing, we can conclude that the iterative bitonic sort algorithm produces correct and accurate sorting results. The algorithm successfully sorts the input array in ascending order, preserving the integrity of the original elements.
-
-
-
-
-\subsubsection*{Results}
-The Bitonic Sort algorithm is then applied to the input array using the \texttt{bitonicSort} function. The execution time of the sorting process is measured using the \texttt{omp\_get\_wtime} function. Finally, the sorted array is printed using the \texttt{printArray} function, and the total execution time is displayed.
-\begin{table}[htb]
-	\centering
-	\caption{Bitonic sort with different input sizes}\label{tab:example}
-	\begin{tabular}{l|ccccc}
-		\toprule
-		No of characters & $2^3$ & $2^{16}$ & $2^{23}$ & $2^{26}$ & $2^{28}$\\
-		\midrule
-		Serial &0.1&0.2&0.3&0.4&0.5\\
-		Parallel &&&&\\
-		Speedup &2&3&4&5&6\\
-		\bottomrule
-	\end{tabular}
-\end{table} 
-\subsection{OpenMP} 
+	\end{verbatim}
 \subsection{MPI}
-\pagebreak
+\subsubsection*{Parallelisation}
+\begin{enumerate}
+	\item My approach with MPI was to scatter the \texttt{input} array with a size of \texttt{chunk\_size} across each process.
+	\item run \texttt{genBitonic} then Gather each process back so the one half of processes that own the monotonic increasing is brought back with the other half of processes that own the monotonic decreasing sequence
+\end{enumerate}
+\subsection*{Performance evaluation}
+The Bitonic Sort algorithm is then applied to the input array using the \texttt{bitonicSort} function. 
+The execution time of the sorting process is measured using the \texttt{omp\_get\_wtime} function. Finally, the sorted array is printed using the \texttt{printArray} function, and the total execution time is displayed.
+\begin{figure}[htb]
+    \centering
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \caption{Bitonic sequence sort on 2 cores}\label{tab:example1}
+        \adjustbox{max width=\textwidth}{
+            \begin{tabular}{l|cccc}
+                \toprule
+                Input size & $2^3$ & $2^{18}$ & $2^{20}$ & $2^{26}$\\
+                \midrule
+                Serial &0.000005&0.142559&0.538202&54.035102\\
+                OpenMP &0.000289&0.037189&0.134956&12.085019\\
+                Speedup &0.017256&3.833307&3.987979&4.471246\\
+                MPI &0.000073&0.068826&0.284624&27.667862\\
+                Speedup &0.068259&2.071306&1.890921&1.952991\\
+                \bottomrule
+            \end{tabular}
+        }
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \caption{Bitonic sequence sort on 4 cores}\label{tab:example2}
+        \adjustbox{max width=\textwidth}{
+            \begin{tabular}{l|cccc}
+                \toprule
+                Input size & $2^3$ & $2^{18}$ & $2^{20}$ & $2^{26}$\\
+                \midrule
+                Serial  &0.000001&0.139811&0.534981&54.402933\\
+                OpenMP  &0.001198&0.035570&0.144845&12.836372\\
+                Speedup &0.000834&3.930511&3.693469&4.238186\\
+                MPI     &0.218966&1.062465&1.372911&37.945344\\
+                Speedup &0.000004&0.131591&0.389669&1.433718\\
+                \bottomrule
+            \end{tabular}
+        }
+    \end{minipage}
+    
+    \vspace{20pt}
+    
+    \raggedright % Left-align the following paragraph
+    MPI here performs 30\% worse on 4 cores compared to 2 largely due to 
+	increased overhead from having to split the data across more processes where 
+	it is much more beneficial to not split it up as much for this small input set. 
+	We can see from the jump of speedup from Figure 1, $2^3$ to $2^{18}$ exhibits much 
+	better utilization of processes to parallelize the task.
+	OpenMP is significantly better optimised on larger sizes due to it's iterative
+	nature whereas the serial with pure recursion handles smaller sorts better.
+    
+    \vspace{20pt}
+    
+    \includegraphics[width=0.45\textwidth]{pics/bitonic_2_26.png}
+    \hfill
+    \includegraphics[width=0.45\textwidth]{pics/bitonic_2_26_speedup.png}
+    
+    \caption{Bitonic sequence images}\label{fig:bitonic_images}
+\end{figure}
+\clearpage
 \section{Problem 3: Parallel Graph Algorithm}
 \subsection{Serial}
 \subsection*{Strategy}
 The algorithm that was chosen was Dijkstra's Single Source Shortest Path algorithm with a standard implementation.
 \subsection{OpenMP}
-\subsection*{Parallization Strategy}
+\subsection*{Parallelisation Strategy}
 The strategy that was used to parallize Dijkstra's algorithm was by allowing each processor to visit adjacent nodes concurrently. This proved to be effective when graphs had many adjacencies however the amount of cores utilised were dependant on how many adjacencies the nodes had.\\\\
 
 \subsection{MPI}
-The MPI implementation follows the same paralization strategy as the OMP version. With the key difference being that the OMP implemention being that we take the 2d input graph and flatten it into a 1d array. This allows us to scatter the graph input graph to each process and then each perform their computation seperatly on their section of the graph. The results are then collected on the first node. 
+The MPI implementation follows the same parallelisation strategy as the OMP version. With the key difference being that the OMP implemention being that we take the 2d input graph and flatten it into a 1d array. This allows us to scatter the graph input graph to each process and then each perform their computation seperatly on their section of the graph. The results are then collected on the first node. 
 An example figure is given in Figure~\ref{fig:sp_fig1}.
 
 An example of table is given Table~\ref{tab:example}.
@@ -259,7 +330,7 @@ The tests were done on laptops and on servers.
 		\bottomrule
 	\end{tabular}
 \end{table}
-As can be seen with the above results the overhead caused by parallization is minimised with larger problem sizes.  
+As can be seen with the above results the overhead caused by parallelisation is minimised with larger problem sizes.  
 \begin{table}[htb]
 	\centering
 	\caption{Results using 4 threads/processes on different problem sizes}
@@ -294,4 +365,3 @@ When using 4 threads the OMP results can be seen to have a large boost in perfor
 \end{table}
 \\we see a small decrease in performance when moving up to 8 threads. The reason for this is due to the lack of concurrency that we could expose in our parallel implementation. 
 \end{document} 
-
