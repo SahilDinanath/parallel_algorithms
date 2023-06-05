@@ -1,5 +1,6 @@
 #!/bin/bash
 #correctness assertion for serial can be tested with graph_0.txt
+#options 
 file_name="graph_0.txt"
 threads=8
 processes=8
