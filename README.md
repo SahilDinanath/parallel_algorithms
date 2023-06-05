@@ -26,7 +26,7 @@ n = 2 ** 26  # Size of the bitonic sequence
 ```bash
 file_name="input_2_<input_size>.txt"
 ```
-3. Run `randomarrays.py` beforehand if the `<input_size>` is less than 22
+3. Run `randomarrays.py` beforehand if the `<input_size>` is greater than 22
 ### Dijkstra SSSP
 To execute with different graphs change `<graph_num>` in ``sssp_dijkstra/run.sh``
 ```bash
