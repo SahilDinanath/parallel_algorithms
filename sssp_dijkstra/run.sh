@@ -1,8 +1,8 @@
 #!/bin/bash
 
-file_name="graph_6.txt"
-threads=2
-processes=2
+file_name="graph_2.txt"
+threads=8
+processes=1
 
 make clean
 make all
