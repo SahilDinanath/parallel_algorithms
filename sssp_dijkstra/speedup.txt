@@ -1,3 +1,3 @@
-Average execution time: 0.0000035000
-Average execution time: 0.0002270000
-Average execution time: 0.0000072500
+Average execution time: 0.0000015000
+Average execution time: 0.0001402500
+Average execution time: 0.0000642500

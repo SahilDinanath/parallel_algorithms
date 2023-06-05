@@ -1,6 +1,6 @@
 import random
 
-file = open("input_2_20.txt", "w")
+file = open("input_2_18.txt", "w")
 
 def generate_bitonic_sequence(n):
     seq = [random.randint(0, 9) for _ in range(n)]
@@ -9,7 +9,7 @@ def generate_bitonic_sequence(n):
     seq[mid:] = reversed(seq[mid:])  # Reversing the second half of the sequence
     return seq
 
-n = 2 ** 20  # Size of the bitonic sequence
+n = 2 ** 18# Size of the bitonic sequence
 bitonic_seq = generate_bitonic_sequence(n)
 
 for num in bitonic_seq:

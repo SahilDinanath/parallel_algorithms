@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Options for running files
-power_of_two=29
+power_of_two=18
 threads=2
 processes=2
 
