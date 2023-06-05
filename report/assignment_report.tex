@@ -13,15 +13,12 @@
 %\newpage
 \pagenumbering{arabic} 
 \section{Problem 1: Parallel Scan}
-\begin{itemize}
-	\item  Given a set of elements, $[a_0,a_1,\dotsm,a_{n-1}]$, the scan operation associated with addition operator for this input is the output set $[a_0,(a_0+a_1),\dotsm,(a_0+a_1+\dotsm+a_{n-1})]$. 
-	\item For example, the input set is $[2,1,4,0,3,7,6,3]$, then the scan with addition operator of this input is $[2,3,7,7,10,17,23,26]$. 
-\end{itemize}
+	 Given a set of elements, $[a_0,a_1,\dotsm,a_{n-1}]$, the scan operation associated with addition operator for this input is the output set $[a_0,(a_0+a_1),\dotsm,(a_0+a_1+\dotsm+a_{n-1})]$. 
+	 For example, the input set is $[2,1,4,0,3,7,6,3]$, then the scan with addition operator of this input is $[2,3,7,7,10,17,23,26]$. 
 \subsection{Serial} 
 \subsection*{strategy:}
 The approach that was chosen to represent the serial implementation of the prefix scan algorithm was the serial workefficient implementation of blelloch's algorithm which is shown in Listing \ref{lst:scan_serial_blelloch}. 
 \begin{lstlisting}[language=C, caption={upsweep and downsweep pseudocode}, label={lst:scan_serial_blelloch}]
-
 upsweep(inputArray,n):
 	for d = 0 to log2(n) - 1 do
     	for k = 0 to n - 1 by 2^(d+1) do
@@ -34,11 +31,8 @@ downsweep(inputArray,n):
 			temp = inputArray[k + 2^d - 1] 
 			inputArray[k + 2^d - 1] = inputArray[k + 2^(d+1) - 1]
 			inputArray[k + 2^(d+1) - 1] += temp
-
 \end{lstlisting}
 The idea as stated in \href{https://developer.nvidia.com/gpugems/gpugems3/part-vi-gpu-computing/chapter-39-parallel-prefix-sum-scan-cuda}{Parallel Prefix Sum with Cuda} is to build a balanced binary tree with n leaves and log2(n) levels called depths.
-
-\subsection*{pseudocode:} 
 \subsection{OpenMP}
 \subsection*{parallization method:}
 The serial implementation of blelloch's algorithm was used as the base for the OMP parallel implementation, with largely the core algorithm staying the same. However, the differences being with how the algorithm processed a single array. The first most obvious parallisation method is to parallise the inner for loops in both the upsweep and downsweep of the algorithm, see Listing \ref{lst:scan_parallisation_inner_loop} 
@@ -59,20 +53,10 @@ getProcessSum(inputArray, size, processSum, chunkSize,rank){
 	if (rank == 0):  
 		processSum = 0 
 		return 
-	 
 	start = (rank-1) * chunkSize 
 	end = rank * chunkSize
-	
 	for i = start to end-1 by i+1 in parallel do
 		processSum += input[i];
-	 
-applyOffset(inputArray, startIndex, endIndex, processSum,rank){ 
-	sum = 0 
-	for j = 0 to rank by j+1
-		sum += processSum[j] 
-		
-	for i = startIndex to endIndex by i+1
-		inputArray[i] += sum
 \end{lstlisting}
 \subsection{MPI}
 \subsection*{Parallization Strategy:}
@@ -89,7 +73,6 @@ The correctness of all prefix sum algorithm above was determined by a simple seq
 prefixSum(inputArray, size) 
 	for i = 1 to size-1 by i+1 
 		input[i] += input[i - 1] 
-	 
 \end{lstlisting}
 The above algorithm is easily testable itself, simple enough implementation to ensure algorithmic correctness, and correct in all problem sizes with testing speeds being acceptable. 
 \\the steps that were taken to implement this were:
@@ -99,7 +82,6 @@ The above algorithm is easily testable itself, simple enough implementation to e
 	\item perform the serial/parallel algorithm that are to be tested on the input array. This will modify the array and result in a final answer.
 	\item When this is done perform the serial sequential scan algorithm above on the original array.
 	\item Each element of each array is then compaired to see if they match.
-	
 \end{enumerate}
 Correctness of the testing algorithm was also ensured by reading in determinate data from files which solution is known, then comparing the output to what was expected. This ensures the correctness check is correct, which ensures that the other algorithms would be correct.
 \subsection{Testing}
@@ -247,36 +229,69 @@ The Bitonic Sort algorithm is then applied to the input array using the \texttt{
 The algorithm that was chosen was Dijkstra's Single Source Shortest Path algorithm with a standard implementation.
 \subsection{OpenMP}
 \subsection*{Parallization Strategy}
-the first strategy that was used to parallize Dijkstra's algorithm was by allowing each processor to visit adjacent nodes concurrently. This proved to be effective when graphs had many adjacencies however the amount of cores utilised were dependant on how many adjacencies the node had.\\\\
+The strategy that was used to parallize Dijkstra's algorithm was by allowing each processor to visit adjacent nodes concurrently. This proved to be effective when graphs had many adjacencies however the amount of cores utilised were dependant on how many adjacencies the nodes had.\\\\
 
 \subsection{MPI}
 The MPI implementation follows the same paralization strategy as the OMP version. With the key difference being that the OMP implemention being that we take the 2d input graph and flatten it into a 1d array. This allows us to scatter the graph input graph to each process and then each perform their computation seperatly on their section of the graph. The results are then collected on the first node. 
 An example figure is given in Figure~\ref{fig:sp_fig1}.
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=0.5\linewidth]{pics/sp_fig1.png}
-	\caption{A directed graph}\label{fig:sp_fig1}
-\end{figure}
 
 An example of table is given Table~\ref{tab:example}.
+
+\subsection{Correctness}
+To test the correctness of the algorithms we verfied that our sequential algorithm was correct by having it read in a known graph and comparing the end result with it's output. \\\\After verifying our sequential algorithm to be correct we proceeded to use it to test the correctness of our OMP and MPI implementations. We did this by made two copies of the array, input and original. We then had each algorithm perform their method of computation on each array. Each element was then compared sequentially with eachother to ensure correctness of the final result.
+\subsection{Testing}
+Testing for this these algorithms were done using a bash script. The graph and the number of threads/processes were passed in as parameters into the executable. We ran each computation multiples times, wrote the results to a file and then computed the average speed up compared to the sequential algorithm and time.
+The data used to test the algorithms were given to us in text files each one larger then the last.
+The tests were done on laptops and on servers.
+\subsection{Performance Evaluation}
 \begin{table}[htb]
 	\centering
-	\caption{An example of a table}\label{tab:example}
+	\caption{Results using 2 threads/processes on different problem sizes}
 	\begin{tabular}{l|ccccc}
 		\toprule
-		No of vertices & 64 & 128 & 256 & 384 & 512\\
+		No of elements& $graph\_2.txt$ & $graph\_8.txt$ & $graph\_10.txt$\\
 		\midrule
-		Serial &0.1&0.2&0.3&0.4&0.5\\
-		Parallel &&&&\\
-		Sppedup &2&3&4&5&6\\
+		Serial 	&0.000005	&0.003785&0.007159\\
+		OMP 	&0.000068	&0.003383&0.005172\\
+		Speedup &0.076642	&1.118921&1.384069\\
+		MPI 	&0.000039	&0.005341&0.009295\\
+		Speedup &0.132911	&0.708655&0.770172\\
 		\bottomrule
 	\end{tabular}
-\end{table} 
-\subsection{Correctness}
-To test the correctness of the algorithms we verfied that our sequential algorithm was correct by having it read in a known graph and comparing the end result with it's output. After we verified our sequential algorithm was correct, we then made two copies of the array, input and original. We then had each algorithm perform their method of computation on each array. Each element was then compared sequentially with eachother to ensure correctness.
-\subsection{testing}
-Testing for this these algorithms were done using a bash script. The graph and the number of threads/processes were passed in as parameters into the executable. We ran each computation multiples times, wrote the results to a file and then computed the average speed up compared to the sequential algorithm and time.
-The tests were done on laptops and on servers.
-\subsection{performance evaluation}
+\end{table}
+As can be seen with the above results the overhead caused by parallization is minimised with larger problem sizes.  
+\begin{table}[htb]
+	\centering
+	\caption{Results using 4 threads/processes on different problem sizes}
+	\begin{tabular}{l|ccccc}
+		\toprule
+		No of elements& $graph\_2.txt$ & $graph\_8.txt$ & $graph\_10.txt$\\
+		\midrule
+		Serial 	&0.000006		&0.003753&0.007254\\
+		OMP 	&0.000129		&0.002836&0.003870\\
+		Speedup &0.042802		&1.322992&1.874491\\
+		MPI 	&inconclusive	&inconclusive&inconclusive\\
+		Speedup &inconclusive	&inconclusive&inconclusive\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+\pagebreak
+When using 4 threads the OMP results can be seen to have a large boost in performance when computing the largest problem size. Due to an error in our MPI implementation we could not retrieve retrieve consistent data from the MPI runs so it was decided to ommit the results from the report.
+\begin{table}[htb]
+	\centering
+	\caption{Results using 8 threads/processes on different problem sizes}
+	\begin{tabular}{l|ccccc}
+		\toprule
+		No of elements& $graph\_2.txt$ & $graph\_8.txt$ & $graph\_10.txt$\\
+		\midrule
+		Serial 	&0.000009		&0.003823&0.007191\\
+		OMP 	&0.000312		&0.003159&0.003885\\
+		Speedup &0.028823		&1.210255&1.850910\\
+		MPI 	&inconclusive	&inconclusive&inconclusive\\
+		Speedup &inconclusive	&inconclusive&inconclusive\\
+		\bottomrule
+	\end{tabular}
+\end{table}
+\\we see a small decrease in performance when moving up to 8 threads. The reason for this is due to the lack of concurrency that we could expose in our parallel implementation. 
 \end{document} 
 
