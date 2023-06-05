@@ -16,7 +16,7 @@
 	 Given a set of elements, $[a_0,a_1,\dotsm,a_{n-1}]$, the scan operation associated with addition operator for this input is the output set $[a_0,(a_0+a_1),\dotsm,(a_0+a_1+\dotsm+a_{n-1})]$. 
 	 For example, the input set is $[2,1,4,0,3,7,6,3]$, then the scan with addition operator of this input is $[2,3,7,7,10,17,23,26]$. 
 \subsection{Serial} 
-\subsection*{strategy:}
+\subsection*{Strategy:}
 The approach that was chosen to represent the serial implementation of the prefix scan algorithm was the serial workefficient implementation of blelloch's algorithm which is shown in Listing \ref{lst:scan_serial_blelloch}. 
 \begin{lstlisting}[language=C, caption={upsweep and downsweep pseudocode}, label={lst:scan_serial_blelloch}]
 upsweep(inputArray,n):
@@ -363,5 +363,13 @@ When using 4 threads the OMP results can be seen to have a large boost in perfor
 		\bottomrule
 	\end{tabular}
 \end{table}
-\\we see a small decrease in performance when moving up to 8 threads. The reason for this is due to the lack of concurrency that we could expose in our parallel implementation. 
+\\We see a small decrease in performance when moving up to 8 threads. The reason for this is due to the lack of concurrency that we could expose in our parallel implementation. 
+\pagebreak
+\section{References}
+\begin{enumerate}
+    \item Blelloch, G. E. (1993). Prefix sums and their applications. \emph{Tech. Report CMU-CS-90-190}. Carnegie Mellon University.
+    \item Harris, M., Sengupta, S., \& Owens, J. D. (2007). Chapter 39. Parallel Prefix Sum (Scan) with CUDA. In \emph{GPU Gems 3} (pp. 851-876). NVIDIA Corporation.
+    \item Mohan, S. (2021). Understanding implementation of work-efficient parallel prefix scan. \emph{Medium}.
+    \item McClain, A. B. (2011). Optimization of Scientific Computation for Multicore Systems. \emph{Wright State University}.
+\end{enumerate}
 \end{document} 
