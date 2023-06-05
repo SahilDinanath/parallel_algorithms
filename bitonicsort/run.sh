@@ -1,21 +1,23 @@
 #!/bin/bash
 
 # Options for running files
-file_name="input_2_18.txt"
-threads=4
+file_name="input_2_26.txt"
+threads=2
 processes=4
 
 make clean
 make all 
+
+
 
 echo "========================"
 echo "Results of Bitonic Sort Implementations"
 echo "========================"
 echo ""
 # Extract the value of num from the file_name
-num=$(echo "$file_name" | sed -n 's/input_2_\([0-9]*\)\.txt/\1/p')
+power_of_two=$(echo "$file_name" | sed -n 's/input_2_\([0-9]*\)\.txt/\1/p')
 
-if (( num <= 18 )); then
+if (( power_of_two <= 22 )); then
   python3 randomarrays.py
 else
   echo "Reading from pre-generated file"
