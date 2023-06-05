@@ -1,5 +1,5 @@
 CC = mpicc
-CFLAGS= -g -Wall 
+CFLAGS= 
 LDLIBS = -lm
 
 all: sssp sssp_omp sssp_mpi
