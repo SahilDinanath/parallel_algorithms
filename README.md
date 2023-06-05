@@ -20,7 +20,7 @@ To execute with different input sizes do the following:
 1. Edit `bitonicsort/randomarrays.py` and change `<input_size>` in the following two lines
 ```py
 file = open("input_2_<input_size>.txt","w")
-n = 2 ** 26  # Size of the bitonic sequence
+n = 2 ** <input_size>  # Size of the bitonic sequence
 ```
 2. Edit `bitonicsort/run.sh` 
 ```bash
