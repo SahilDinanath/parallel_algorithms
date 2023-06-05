@@ -242,7 +242,7 @@ int main(int argc, char *argv[]) {
   //  int source;
   //  printf("Enter the source vertex: ");
   //  scanf("%d", &source);
-  Vertex *input = dijkstra(rank, numOfProcesses, local_graph, n, 0);
+  Vertex *input = dijkstra(rank, numOfProcesses, local_graph, n/numOfProcesses, 0);
 
   double timeEnd = MPI_Wtime();
   double timeTaken = timeEnd - timeStart;
