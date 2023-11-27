@@ -1,6 +1,7 @@
 # Parallel Algorithms 
 
-![intro](https://github.com/SahilDinanath/parallel_algorithms/assets/46680594/4a304160-de69-4ca4-87b3-0db015f6acfe)
+![intro](https://github.com/SahilDinanath/parallel_algorithms/assets/46680594/b782e609-dfdb-4c19-b020-b78222e51618)
+
 
 ## Table of Contents
 - [Introduction](#introduction)
