@@ -9,7 +9,6 @@
   - [Serial](#serial)
   - [OpenMP Parallel](#openmp-parallel)
   - [MPI Parallel](#mpi-parallel)
-- [Benchmarking](#benchmarking)
 - [Report](#report)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -17,7 +16,10 @@
 
 ## Introduction
 
-Parallel computing plays a crucial role in addressing the growing demand for increased computational power. This repository focuses on parallel implementations of three classical algorithms - Prefix Scan, Bitonic Sort, and Dijkstra's Single Source Shortest Path. The goal is to explore and compare the performance of these algorithms under different parallelization paradigms. Each algorithm is implemented in three different paradigms - serial, OpenMP (omp) parallel, and Message Passing Interface (MPI) parallel. The report going deep into introductions and implementation details can be found at [[[[[[]]]]]]]] insert something here.
+Parallel computing plays a crucial role in addressing the growing demand for increased computational power. This repository focuses on parallel implementations of three classical algorithms - Prefix Scan, Bitonic Sort, and Dijkstra's Single Source Shortest Path. The goal is to explore and compare the performance of these algorithms under different parallelization paradigms. Each algorithm is implemented in three different paradigms - serial, OpenMP (omp) parallel, and Message Passing Interface (MPI) parallel. 
+
+## Report
+The report goes into the introduction of each algorithm, includes implementation details, comprehensive analysis, charts, and insights derived from the benchmarking process. The report can be found [here](report/report.pdf). 
 
 ## Algorithms
 
@@ -47,13 +49,6 @@ OpenMP is employed to introduce parallelism to the algorithms, allowing for shar
 
 Message Passing Interface (MPI) is utilized to parallelize the algorithms across distributed-memory systems.
 
-## Benchmarking
-
-The performance of each algorithm and implementation is benchmarked to evaluate the efficiency of the parallelization strategies. The benchmarking results are recorded and analyzed in detail in the report.
-
-## Report
-
-The detailed benchmarking report can be found in the [Report](report/report.pdf). It includes implementation details and comprehensive analysis, charts, and insights derived from the benchmarking process.
 
 ## Usage
 
