@@ -84,6 +84,7 @@ To use and experiment with these parallel algorithms, follow the instructions pr
    sudo apt-get update
    sudo apt-get install openmpi-bin libopenmpi-dev
    ```
+OR
 
 2. **MPICH:**
 
