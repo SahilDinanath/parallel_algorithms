@@ -17,7 +17,7 @@
 
 ## Introduction
 
-Parallel computing plays a crucial role in addressing the growing demand for increased computational power. This repository focuses on parallel implementations of three classical algorithms - Prefix Scan, Bitonic Sort, and Dijkstra's Single Source Shortest Path. The goal is to explore and compare the performance of these algorithms under different parallelization paradigms. Each algorithm is implemented in three different paradigms - serial, OpenMP (omp) parallel, and Message Passing Interface (MPI) parallel.
+Parallel computing plays a crucial role in addressing the growing demand for increased computational power. This repository focuses on parallel implementations of three classical algorithms - Prefix Scan, Bitonic Sort, and Dijkstra's Single Source Shortest Path. The goal is to explore and compare the performance of these algorithms under different parallelization paradigms. Each algorithm is implemented in three different paradigms - serial, OpenMP (omp) parallel, and Message Passing Interface (MPI) parallel. The report going deep into introductions and implementation details can be found at [[[[[[]]]]]]]] insert something here.
 
 ## Algorithms
 
@@ -53,7 +53,7 @@ The performance of each algorithm and implementation is benchmarked to evaluate 
 
 ## Report
 
-The detailed benchmarking report can be found in the [Report](report/) directory. It includes comprehensive analysis, charts, and insights derived from the benchmarking process.
+The detailed benchmarking report can be found in the [Report](report/report.pdf). It includes implementation details and comprehensive analysis, charts, and insights derived from the benchmarking process.
 
 ## Usage
 
