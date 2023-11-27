@@ -55,6 +55,58 @@ Message Passing Interface (MPI) is utilized to parallelize the algorithms across
 To use and experiment with these parallel algorithms, follow the instructions provided in each algorithm's directory. The bash script `(run.sh)` in the top directory of the project will execute all scripts for each implementation.
 
 ### Requirements
+### OpenMP (omp)
+
+1. **GCC (GNU Compiler Collection):**
+   
+   Install the GCC compiler, which includes support for OpenMP.
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install build-essential
+   ```
+
+2. **Libomp (OpenMP Runtime Library):**
+
+   Install the libomp library for OpenMP support.
+
+   ```bash
+   sudo apt-get install libomp-dev
+   ```
+
+### MPI (Message Passing Interface)
+
+1. **Open MPI:**
+
+   Install the Open MPI implementation.
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install openmpi-bin libopenmpi-dev
+   ```
+
+2. **MPICH:**
+
+   Install the MPICH implementation.
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install mpich
+   ```
+
+### Python
+
+ **Python and Pip:**
+
+   Ensure that Python and pip are installed on your system.
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install python3
+   ```
+
+Make sure that the versions and installations are consistent with your system requirements. Adjust the package names and versions based on your system and preferences.
+
 #### Line endings consistency
 ```bash
 sudo apt install dos2unix
